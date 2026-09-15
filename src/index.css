@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #000000; /* Чорний фон, щоб не блимало білим при завантаженні */
+}
+
+/* ==================================================== */
+/* ГЛОБАЛЬНЕ ВБИВСТВО СИНІХ РАМОК ТА ЗАЛИПАННЯ НА ANDROID */
+/* ==================================================== */
+
+* {
+  /* Вбиває синій спалах при тапі на Android */
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Вбиває будь-які фокусні рамки глобально */
+*:focus, 
+*:active, 
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+button, a, input, textarea, select {
+  outline: none !important;
+}
+
+/* Вбиваємо залипання hover-ефектів на сенсорних екранах */
+@media (hover: none) {
+  *:hover {
+    /* На телефонах hover не повинен працювати взагалі */
+    color: inherit;
+    background-color: inherit;
+    border-color: inherit;
+  }
+}
