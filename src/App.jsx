@@ -234,8 +234,8 @@ export default function App() {
 
   const handleRestoreOrder = async (order) => {
     try {
-      const { updateDoc } = await import('firebase/firestore');
-      await updateDoc(doc(db, 'bakery', user.uid, 'sales', order.id), { status: 'planned', historicalCost: null });
+      const { updateDoc, deleteField } = await import('firebase/firestore');
+      await updateDoc(doc(db, 'bakery', user.uid, 'sales', order.id), { status: 'planned', historicalCost: deleteField() });
       showToast('Повернено в активні!');
     } catch (e) { showToast('Помилка'); }
   };

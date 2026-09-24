@@ -20,7 +20,7 @@ const OrderItem = memo(({ order, filter, invoiceMode, isSelected, onDelete, onCo
       layout
       initial={{ opacity: 0, scale: 0.95 }}
       animate={isCompletedAnim ? { height: 0, opacity: 0, marginBottom: 0, transition: { delay: 0.4, duration: 0.3 } } : { opacity: 1, scale: 1, height: 'auto' }}
-      exit={{ opacity: 0, x: '100%', transition: { duration: 0.25, ease: "easeOut" } }}
+      exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
       className="relative mb-4 mx-4"
     >
       {isCompletedAnim && (
@@ -132,8 +132,8 @@ const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, 
         };
       }); 
       
-      const tc = order.historicalCost !== undefined ? order.historicalCost : dynamicTc;
-      const profit = tr - tc; 
+      const tc = (order.historicalCost !== undefined && order.historicalCost !== null) ? order.historicalCost : dynamicTc;
+      const profit = tr - (tc || 0); 
       
       return { ...order, tr, tc, profit, itemsDisplay };
     });
@@ -148,28 +148,38 @@ const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, 
         </div>
       )}
       
-      {processedSales.length === 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-8 text-center flex flex-col items-center mt-10">
-          <PackageOpen size={48} className="text-[#2A2323] mb-4" />
-          <p className="text-[#8C7A7A] font-medium">Список порожній.</p>
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={filter} 
+          initial={{ opacity: 0, x: filter === 'planned' ? -20 : 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: filter === 'planned' ? 20 : -20 }}
+          transition={{ duration: 0.2 }}
+        >
+          {processedSales.length === 0 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-8 text-center flex flex-col items-center mt-10">
+              <PackageOpen size={48} className="text-[#2A2323] mb-4" />
+              <p className="text-[#8C7A7A] font-medium">Список порожній.</p>
+            </motion.div>
+          )}
+          
+          <AnimatePresence mode="popLayout">
+            {processedSales.map(order => (
+              <OrderItem 
+                key={order.id}
+                order={order}
+                filter={filter}
+                invoiceMode={invoiceMode}
+                isSelected={selectedForInvoice.includes(order.id)}
+                onDelete={onDelete}
+                onComplete={onComplete}
+                onRestore={onRestore}
+                toggleSelection={toggleSelection}
+                onEditOrder={onEditOrder}
+              />
+            ))}
+          </AnimatePresence>
         </motion.div>
-      )}
-      
-      <AnimatePresence mode="popLayout">
-        {processedSales.map(order => (
-          <OrderItem 
-            key={order.id}
-            order={order}
-            filter={filter}
-            invoiceMode={invoiceMode}
-            isSelected={selectedForInvoice.includes(order.id)}
-            onDelete={onDelete}
-            onComplete={onComplete}
-            onRestore={onRestore}
-            toggleSelection={toggleSelection}
-            onEditOrder={onEditOrder}
-          />
-        ))}
       </AnimatePresence>
     </div>
   );
