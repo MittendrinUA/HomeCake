@@ -82,11 +82,15 @@ const DrawerMenu = memo(function DrawerMenu({ activeTab, user, onNavigate, onClo
         
         {/* Header with Close Button */}
         <div className="px-6 py-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-black text-[#F4EFEA] tracking-widest uppercase leading-none">Whisked</h2>
-            <div className="mt-2">
-               <span className="text-[#D4AF37] text-[9px] font-bold tracking-widest uppercase bg-[#D4AF37]/10 px-2.5 py-1 rounded-md border border-[#D4AF37]/20">Premium Bakery</span>
+          <div className="flex items-center gap-3">
+            <div className="bg-[#151212] p-2.5 rounded-2xl border border-[#D4AF37]/30 shadow-lg shadow-[#D4AF37]/10">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+                <path d="M10 18h4v3.5a2 2 0 0 1-4 0z"/>
+                <path d="M12 18c-4 0-6-5-6-10 0-3 2-6 6-6s6 3 6 6c0 5-2 10-6 10z"/>
+                <path d="M12 18c-2 0-3-5-3-10 0-3 1-6 3-6s3 3 3 6c0 5-1 10-3 10z"/>
+              </svg>
             </div>
+            <h2 className="text-3xl font-black text-[#F4EFEA] tracking-widest uppercase leading-none mt-1">Whisked</h2>
           </div>
           <button 
             onClick={handleClose} 

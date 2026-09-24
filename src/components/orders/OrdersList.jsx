@@ -3,13 +3,15 @@ import { PackageOpen, CheckCircle, CheckSquare, Square, Edit2, Trash2, CalendarC
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 
 const OrderItem = memo(({ order, filter, invoiceMode, isSelected, onDelete, onComplete, toggleSelection, onEditOrder }) => {
+  const [isCompletedAnim, setIsCompletedAnim] = useState(false);
   const x = useMotionValue(0);
-  const opacity = useTransform(x, [0, 90], [0, 1]);
-  const scale = useTransform(x, [0, 90], [0.5, 1.1]);
 
   const handleDragEnd = (e, info) => {
     if (info.offset.x > 110) {
-       onComplete(order);
+       setIsCompletedAnim(true);
+       setTimeout(() => {
+          onComplete(order);
+       }, 700);
     }
   };
 
@@ -17,22 +19,27 @@ const OrderItem = memo(({ order, filter, invoiceMode, isSelected, onDelete, onCo
     <motion.div 
       layout
       initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      animate={isCompletedAnim ? { height: 0, opacity: 0, marginBottom: 0, transition: { delay: 0.4, duration: 0.3 } } : { opacity: 1, scale: 1, height: 'auto' }}
       exit={{ opacity: 0, x: '100%', transition: { duration: 0.25, ease: "easeOut" } }}
-      transition={{ duration: 0.2 }}
       className="relative mb-4 mx-4"
     >
-      {filter === 'planned' && !invoiceMode && (
-        <div className="absolute inset-0 bg-gradient-to-r from-[#5B7A5A] to-[#1E1919] rounded-[32px] flex items-center pl-8 overflow-hidden">
-          <motion.div style={{ opacity, scale }}>
-            <CheckCircle className="text-white drop-shadow-md" size={36}/>
-          </motion.div>
-        </div>
+      {isCompletedAnim && (
+        <motion.div 
+          initial={{ scale: 0, opacity: 0, y: 0 }}
+          animate={{ scale: [0, 1.2, 1, 0.8], opacity: [0, 1, 1, 0], y: [0, -10, -10, -30] }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"
+        >
+          <div className="bg-[#5B7A5A] rounded-full p-4 shadow-2xl shadow-[#5B7A5A]/50 border-2 border-[#1E1919]">
+            <CheckCircle className="text-white" size={48}/>
+          </div>
+        </motion.div>
       )}
       
       <motion.div 
         style={{ x }}
-        drag={filter === 'planned' && !invoiceMode ? "x" : false}
+        animate={isCompletedAnim ? { scale: 0.5, opacity: 0, transition: { duration: 0.3 } } : { scale: 1, opacity: 1 }}
+        drag={filter === 'planned' && !invoiceMode && !isCompletedAnim ? "x" : false}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={{ left: 0, right: 0.6 }}
         onDragEnd={handleDragEnd}
