@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whisked - Варіанти логотипів</title>
+  <style>
+    :root {
+      --bg: #151212;
+      --bg-card: #1E1919;
+      --border: #2A2323;
+      --gold: #D4AF37;
+      --text: #F4EFEA;
+      --text-muted: #8C7A7A;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      text-align: center;
+      padding: 40px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(212,175,55,0.05) 0%, rgba(21,18,18,0) 100%);
+    }
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    p {
+      color: var(--text-muted);
+      margin-top: 10px;
+      font-size: 15px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1200px;
+      padding: 40px 20px;
+      box-sizing: border-box;
+    }
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.15);
+      transform: translateY(-5px);
+    }
+    .preview-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      justify-content: center;
+    }
+    .logo-container {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-container svg {
+      width: 100%;
+      height: 100%;
+    }
+    .app-name {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .variant-name {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gold);
+      font-weight: 700;
+      margin-top: 10px;
+    }
+    .badge {
+      background-color: rgba(212,175,55,0.1);
+      color: var(--gold);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid rgba(212,175,55,0.2);
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Оберіть логотип для Whisked</h1>
+    <p>10 різних преміальних варіантів, що обігрують форму вінчика (whisk).</p>
+  </header>
+
+  <div class="grid">
+    
+    <!-- Variant 1 -->
+    <div class="card">
+      <div class="badge">Варіант 1</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22v-5"/>
+            <path d="M9 17h6"/>
+            <path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/>
+            <path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Класичний Мінімалізм</div>
+    </div>
+
+    <!-- Variant 2 -->
+    <div class="card">
+      <div class="badge">Варіант 2</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22v-7"/>
+            <path d="M10 15h4"/>
+            <path d="M12 15c-4-4-5-8-3-11s5-2 6 2-3 8-3 9"/>
+            <path d="M12 15c4-4 5-8 3-11s-5-2-6 2 3 8 3 9"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Безперервна Лінія</div>
+    </div>
+
+    <!-- Variant 3 -->
+    <div class="card">
+      <div class="badge">Варіант 3</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="10" y="15" width="4" height="7" rx="2" fill="var(--gold)"/>
+            <path d="M12 15c-3-2-4-6-4-10s4-3 4-3 4-1 4 3-1 8-4 10z"/>
+            <path d="M12 15c-1.5-2-2-5-2-9s2-3 2-3 2-1 2 3-0.5 7-2 9z" stroke="var(--bg-card)"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Масивний Преміум</div>
+    </div>
+
+    <!-- Variant 4 -->
+    <div class="card">
+      <div class="badge">Варіант 4</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/>
+            <path d="M9 17h6"/>
+            <path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/>
+            <path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Динамічний (Під кутом)</div>
+    </div>
+
+    <!-- Variant 5 -->
+    <div class="card">
+      <div class="badge">Варіант 5</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="11" stroke-width="0.5"/>
+            <circle cx="12" cy="12" r="10" stroke-width="1.5"/>
+            <path d="M12 20v-4"/>
+            <path d="M10.5 16h3"/>
+            <path d="M12 16c-2-1.5-3-4-3-6.5C9 6 12 4.5 12 4.5s3 1.5 3 5C15 12 14 14.5 12 16z"/>
+            <path d="M12 16c-1-1.5-1.5-3.5-1.5-6C10.5 7 12 5.5 12 5.5s1.5 1.5 1.5 4.5C13.5 12.5 13 14.5 12 16z"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Емблема (У кільці)</div>
+    </div>
+
+    <!-- Variant 6 -->
+    <div class="card">
+      <div class="badge">Варіант 6</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 23c-1 0-1.5-.5-1.5-1.5v-4.5c0-.5-.5-1-1-1-2.5-1-4-4.5-4-8.5C5.5 3 12 1 12 1s6.5 2 6.5 6.5c0 4-1.5 7.5-4 8.5-.5 0-1 .5-1 1v4.5c0 1-.5 1.5-1.5 1.5z"/>
+            <path d="M12 17v-14"/>
+            <path d="M9 16c-1-1.5-1-4-1-6.5 0-2.5 4-4 4-4s4 1.5 4 4c0 2.5 0 5-1 6.5"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Витончена Монолінія</div>
+    </div>
+
+    <!-- Variant 7 -->
+    <div class="card">
+      <div class="badge">Варіант 7</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 21 7 21 17 12 22 3 17 3 7" stroke-width="1"/>
+            <path d="M12 19v-4"/>
+            <path d="M10 15h4"/>
+            <path d="M12 15c-2-1.5-3-3.5-3-6 0-3 3-4.5 3-4.5s3 1.5 3 4.5c0 2.5-1 4.5-3 6z"/>
+            <path d="M12 15c-1-1.5-1.5-3-1.5-5.5 0-2 1.5-3.5 1.5-3.5s1.5 1.5 1.5 3.5c0 2.5-.5 4-1.5 5.5z"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Геометричний (Гексагон)</div>
+    </div>
+
+    <!-- Variant 8 -->
+    <div class="card">
+      <div class="badge">Варіант 8</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(12,12) rotate(45) translate(-12,-12)">
+              <path d="M12 22v-5"/>
+              <path d="M10 17h4"/>
+              <path d="M12 17c-2-2-3-4-3-7 0-3 3-5 3-5s3 2 3 5c0 3-1 5-3 7z"/>
+            </g>
+            <g transform="translate(12,12) rotate(-45) translate(-12,-12)">
+              <path d="M12 22v-5"/>
+              <path d="M10 17h4"/>
+              <path d="M12 17c-2-2-3-4-3-7 0-3 3-5 3-5s3 2 3 5c0 3-1 5-3 7z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Схрещені Вінчики</div>
+    </div>
+
+    <!-- Variant 9 -->
+    <div class="card">
+      <div class="badge">Варіант 9</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="var(--gold)" stroke="none">
+            <path d="M11 16.5C8 14 6 10 6 6c0-3 6-5 6-5s6 2 6 5c0 4-2 8-5 10.5V20c1 0 1.5.5 1.5 1.5S14 23 12 23s-2.5-.5-2.5-1.5.5-1.5 1.5-1.5v-3.5z"/>
+            <path d="M12 3c-1.5 2-2.5 5-2.5 7.5 0 2 1.5 4 2.5 5.5 1-1.5 2.5-3.5 2.5-5.5C14.5 5 13.5 3 12 3z" fill="var(--bg-card)"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Золотий Силует</div>
+    </div>
+
+    <!-- Variant 10 -->
+    <div class="card">
+      <div class="badge">Варіант 10</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 18c-3 0-5.5-2.5-5.5-5.5S9 7 12 7s5.5 2.5 5.5 5.5S15 18 12 18z"/>
+            <path d="M12 7V3"/>
+            <path d="M10 3h4"/>
+            <path d="M8 9.5c1.5 2.5 4 4 4 6.5"/>
+            <path d="M16 9.5c-1.5 2.5-4 4-4 6.5"/>
+            <path d="M12 7c0 3 2 4.5 2 6.5"/>
+            <path d="M12 7c0 3-2 4.5-2 6.5"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Краплеподібний (Сферичний)</div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whisked - Фінальні Варіанти Лого</title>
+  <style>
+    :root {
+      --bg: #151212;
+      --bg-card: #1E1919;
+      --border: #2A2323;
+      --gold: #D4AF37;
+      --copper: #E0BFB8; /* Rose gold / Copper */
+      --champagne: #C4B59D;
+      --text: #F4EFEA;
+      --text-muted: #8C7A7A;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      text-align: center;
+      padding: 40px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(212,175,55,0.05) 0%, rgba(21,18,18,0) 100%);
+    }
+    h1 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
+    p { color: var(--text-muted); margin-top: 10px; font-size: 15px; }
+    
+    .section-title {
+      width: 100%;
+      max-width: 1200px;
+      padding: 40px 20px 0;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 15px;
+      margin-bottom: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px 20px 60px;
+      box-sizing: border-box;
+    }
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.15);
+      transform: translateY(-5px);
+    }
+    .preview-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+      justify-content: center;
+    }
+    .logo-container {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-container svg { width: 100%; height: 100%; }
+    .app-name { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .variant-name { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-top: 10px; text-align: center; }
+    .badge {
+      background-color: rgba(212,175,55,0.1);
+      color: var(--gold);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid rgba(212,175,55,0.2);
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Еволюція обраних логотипів</h1>
+    <p>Варіанти на основі 4, 6, 8 та 9 з різними кольоровими схемами та стилізацією.</p>
+  </header>
+
+  <!-- Блок 4 -->
+  <div class="section-title">Серія 4 (Динамічний Кут)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="badge">Варіант 4.1</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Класичне золото (щільні лінії)</div>
+    </div>
+
+    <div class="card">
+      <div class="badge">Варіант 4.2</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5" stroke="var(--gold)" stroke-width="2"/><path d="M9 17h6" stroke="var(--gold)" stroke-width="2"/>
+            <path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z" stroke="var(--text)" stroke-width="1.5"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z" stroke="var(--text)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Дуальний тон (Золота ручка, Кремовий вінчик)</div>
+    </div>
+
+    <div class="card">
+      <div class="badge">Варіант 4.3</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Мідне Золото (Rose Gold)</div>
+    </div>
+  </div>
+
+  <!-- Блок 6 -->
+  <div class="section-title">Серія 6 (Емблема / Кільце)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="badge">Варіант 6.1</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="11" stroke="var(--gold)" stroke-width="1"/>
+            <circle cx="12" cy="12" r="9" stroke="var(--gold)" stroke-width="0.5" stroke-dasharray="2 2"/>
+            <path d="M12 20v-4" stroke="var(--text)" stroke-width="1.5"/><path d="M10.5 16h3" stroke="var(--text)" stroke-width="1.5"/><path d="M12 16c-2-1.5-3-4-3-6.5C9 6 12 4.5 12 4.5s3 1.5 3 5C15 12 14 14.5 12 16z" stroke="var(--text)" stroke-width="1.5"/><path d="M12 16c-1-1.5-1.5-3.5-1.5-6C10.5 7 12 5.5 12 5.5s1.5 1.5 1.5 4.5C13.5 12.5 13 14.5 12 16z" stroke="var(--text)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Золоте кільце + Кремовий вінчик</div>
+    </div>
+
+    <div class="card">
+      <div class="badge">Варіант 6.2</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24">
+            <defs>
+              <mask id="whiskMask">
+                <rect width="24" height="24" fill="white"/>
+                <path d="M12 21v-4 M10 17h4 M12 17c-2-1.5-3-4-3-6.5C9 6 12 4 12 4s3 2 3 6.5C15 13 14 15.5 12 17z" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 17c-1-1.5-1.5-3.5-1.5-6C10.5 7 12 5 12 5s1.5 2 1.5 6C13.5 13.5 13 15.5 12 17z" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </mask>
+            </defs>
+            <circle cx="12" cy="12" r="11" fill="var(--gold)" mask="url(#whiskMask)"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Негативний простір (Золотий щит)</div>
+    </div>
+
+    <div class="card">
+      <div class="badge">Варіант 6.3</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="11" fill="var(--bg)" stroke="var(--champagne)" stroke-width="1.5"/>
+            <path d="M12 20v-4" stroke="var(--champagne)" stroke-width="1"/><path d="M10.5 16h3" stroke="var(--champagne)" stroke-width="1"/><path d="M12 16c-2-1.5-3-4-3-6.5C9 6 12 4.5 12 4.5s3 1.5 3 5C15 12 14 14.5 12 16z" stroke="var(--champagne)" stroke-width="1"/><path d="M12 16c-1-1.5-1.5-3.5-1.5-6C10.5 7 12 5.5 12 5.5s1.5 1.5 1.5 4.5C13.5 12.5 13 14.5 12 16z" stroke="var(--champagne)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Темна Емблема + Шампань</div>
+    </div>
+  </div>
+
+  <!-- Блок 8 -->
+  <div class="section-title">Серія 8 (Схрещені Вінчики)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="badge">Варіант 8.1</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(12,12) rotate(45) translate(-12,-12)" stroke="var(--gold)">
+              <path d="M12 22v-5 M10 17h4"/>
+              <path d="M12 17c-2-2-3-4-3-7 0-3 3-5 3-5s3 2 3 5c0 3-1 5-3 7z"/>
+            </g>
+            <g transform="translate(12,12) rotate(-45) translate(-12,-12)" stroke="var(--text)">
+              <path d="M12 22v-5 M10 17h4"/>
+              <path d="M12 17c-2-2-3-4-3-7 0-3 3-5 3-5s3 2 3 5c0 3-1 5-3 7z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Контраст (Золото + Крем)</div>
+    </div>
+
+    <div class="card">
+      <div class="badge">Варіант 8.2</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(12,12) rotate(45) translate(-12,-12)">
+              <path d="M12 22v-5 M10 17h4 M12 17c-2-2-3-4-3-7 0-3 3-5 3-5s3 2 3 5c0 3-1 5-3 7z"/>
+              <path d="M12 17c-1-1-1.5-3-1.5-5 0-2 1.5-3 1.5-3s1.5 1 1.5 3c0 2-.5 4-1.5 5z"/>
+            </g>
+            <g transform="translate(12,12) rotate(-45) translate(-12,-12)">
+              <path d="M12 22v-5 M10 17h4 M12 17c-2-2-3-4-3-7 0-3 3-5 3-5s3 2 3 5c0 3-1 5-3 7z"/>
+              <path d="M12 17c-1-1-1.5-3-1.5-5 0-2 1.5-3 1.5-3s1.5 1 1.5 3c0 2-.5 4-1.5 5z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Мідна витонченість (Деталізовані)</div>
+    </div>
+  </div>
+
+  <!-- Блок 9 -->
+  <div class="section-title">Серія 9 (Силуети)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="badge">Варіант 9.1</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" stroke="none">
+            <path d="M11 16.5V20c1 0 1.5.5 1.5 1.5S14 23 12 23s-2.5-.5-2.5-1.5.5-1.5 1.5-1.5v-3.5z" fill="var(--text)"/>
+            <path d="M11 16.5C8 14 6 10 6 6c0-3 6-5 6-5s6 2 6 5c0 4-2 8-5 10.5" fill="var(--gold)"/>
+            <path d="M12 3c-1.5 2-2.5 5-2.5 7.5 0 2 1.5 4 2.5 5.5 1-1.5 2.5-3.5 2.5-5.5C14.5 5 13.5 3 12 3z" fill="var(--bg-card)"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Золотий бутон + Кремова ручка</div>
+    </div>
+
+    <div class="card">
+      <div class="badge">Варіант 9.2</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="11" fill="var(--gold)"/>
+            <path d="M11 15.5C8.5 13.5 7 10 7 7c0-2.5 5-4 5-4s5 1.5 5 4c0 3-1.5 6.5-4 8.5V18.5c.8 0 1.2.4 1.2 1.2S13.5 21 12 21s-2-.4-2-1.2.4-1.2 1.2-1.2v-3z" fill="var(--bg)"/>
+            <path d="M12 4.5c-1 1.5-1.8 4-1.8 6 0 1.5 1 3 1.8 4.2C12.8 13.5 13.8 12 13.8 10.5 13.8 8.5 13 6 12 4.5z" fill="var(--gold)"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Золота Монета (Вирізаний силует)</div>
+    </div>
+
+    <div class="card">
+      <div class="badge">Варіант 9.3</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" stroke-width="0.5">
+            <path d="M11 16.5C8 14 6 10 6 6c0-3 6-5 6-5s6 2 6 5c0 4-2 8-5 10.5V20c1 0 1.5.5 1.5 1.5S14 23 12 23s-2.5-.5-2.5-1.5.5-1.5 1.5-1.5v-3.5z"/>
+            <path d="M12 3c-1.5 2-2.5 5-2.5 7.5 0 2 1.5 4 2.5 5.5 1-1.5 2.5-3.5 2.5-5.5C14.5 5 13.5 3 12 3z" fill="var(--bg)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="app-name">Whisked</div>
+      </div>
+      <div class="variant-name">Абсолютне Золото (Монохром)</div>
+    </div>
+  </div>
+
+</body>
+</html>

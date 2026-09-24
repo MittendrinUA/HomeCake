@@ -15,6 +15,7 @@ import AppHeader from './components/layout/AppHeader';
 import DrawerMenu from './components/layout/DrawerMenu';
 import TabBar from './components/layout/TabBar';
 import CustomPrompt from './components/ui/CustomPrompt';
+import Logo from './components/ui/Logo';
 import List from './components/shared/List';
 import InventoryList from './components/inventory/InventoryList';
 import InventoryDetail from './components/inventory/InventoryDetail';
@@ -268,8 +269,8 @@ export default function App() {
   if (isInitialLoading) {
     return (
       <div className="h-[100dvh] w-full bg-[#151212] flex flex-col items-center justify-center text-[#F4EFEA] font-sans">
-         <div className="w-16 h-16 border-4 border-[#2A2323] border-t-[#D4AF37] rounded-full animate-spin mb-6 shadow-lg"></div>
-         <h2 className="text-xl font-bold tracking-widest text-[#D4AF37]">WHISKED</h2>
+         <Logo size={48} className="mb-8" />
+         <div className="w-10 h-10 border-4 border-[#2A2323] border-t-[#E0BFB8] rounded-full animate-spin mb-4 shadow-lg"></div>
          <p className="text-[#8C7A7A] mt-2 font-medium tracking-wide animate-pulse">{loadingStep}</p>
       </div>
     );
@@ -283,8 +284,8 @@ export default function App() {
     <div className="h-[100dvh] w-full bg-black text-[#F4EFEA] font-sans overflow-hidden select-none relative">
       {isLoading && !isInitialLoading && (
         <div className="absolute inset-0 bg-[#151212]/50 backdrop-blur-[2px] z-[500] flex flex-col items-center justify-center text-[#F4EFEA] font-sans animate-in fade-in duration-200">
-           <div className="w-16 h-16 border-4 border-[#2A2323] border-t-[#D4AF37] rounded-full animate-spin mb-6 shadow-lg"></div>
-           <h2 className="text-xl font-bold tracking-widest text-[#D4AF37] drop-shadow-lg">WHISKED</h2>
+           <Logo size={40} className="mb-6 drop-shadow-lg" />
+           <div className="w-8 h-8 border-4 border-[#2A2323] border-t-[#E0BFB8] rounded-full animate-spin mb-4 shadow-lg"></div>
            <p className="text-[#8C7A7A] mt-2 font-medium tracking-wide animate-pulse drop-shadow-md">{loadingStep}</p>
         </div>
       )}

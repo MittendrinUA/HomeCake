@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { Send } from 'lucide-react';
+import Logo from '../ui/Logo';
 
 const ShoppingListPreview = memo(function ShoppingListPreview({ inventory, sales, recipes, preps }) {
   const plannedSales = sales.filter(s => s.status === 'planned'); 
@@ -41,8 +42,8 @@ const ShoppingListPreview = memo(function ShoppingListPreview({ inventory, sales
   return (
     <div className="p-4 pb-28">
       <div className="bg-[#FDFBF7] text-[#2A2323] p-6 rounded-sm shadow-lg max-w-full font-mono text-sm relative mb-6 border border-[#D4AF37]/30">
-        <div className="text-center mb-6 border-b-2 border-dashed border-[#8C7A7A]/30 pb-4">
-          <h2 className="text-xl font-black uppercase tracking-widest mb-1 text-[#151212]">Whisked</h2>
+        <div className="text-center mb-6 border-b-2 border-dashed border-[#8C7A7A]/30 pb-4 flex flex-col items-center">
+          <Logo size={28} textColor="#151212" iconColor="#151212" className="mb-1" />
           <p className="text-[#8C7A7A] text-xs">Список закупівель</p>
           <p className="font-bold mt-2">{dt}</p>
         </div>

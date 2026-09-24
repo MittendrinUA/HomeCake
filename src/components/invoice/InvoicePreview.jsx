@@ -1,5 +1,6 @@
 import React, { useState, useRef, memo } from 'react';
 import { Send, Loader } from 'lucide-react';
+import Logo from '../ui/Logo';
 
 const InvoicePreview = memo(function InvoicePreview({ sales, recipes }) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -45,8 +46,8 @@ const InvoicePreview = memo(function InvoicePreview({ sales, recipes }) {
   return (
     <div className="p-4 pb-28 flex flex-col items-center">
       <div ref={invoiceRef} className="bg-[#FDFBF7] text-[#2A2323] p-6 rounded-sm shadow-xl w-full max-w-sm font-mono text-sm relative border border-[#D4AF37]/50">
-        <div className="text-center mb-6 border-b-2 border-dashed border-[#8C7A7A]/30 pb-4">
-          <h2 className="text-xl font-black uppercase tracking-widest mb-1 text-[#151212]">Whisked</h2>
+        <div className="text-center mb-6 border-b-2 border-dashed border-[#8C7A7A]/30 pb-4 flex flex-col items-center">
+          <Logo size={28} textColor="#151212" iconColor="#151212" className="mb-1" />
           <p className="text-[#8C7A7A] text-xs uppercase tracking-widest">Товарний чек</p>
           <p className="font-bold mt-2 text-sm">{dt}</p>
         </div>

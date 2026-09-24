@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whisked - Типографіка та Колір</title>
+  
+  <!-- Підключення преміум-шрифтів з Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,600&family=Great+Vibes&family=Jost:wght@400;600&family=Montserrat:wght@400;700;900&family=Outfit:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Prata&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #151212;
+      --bg-card: #1E1919;
+      --border: #2A2323;
+      --gold: #D4AF37;
+      --copper: #E0BFB8; /* Обраний колір логотипу */
+      --text: #F4EFEA;
+      --text-muted: #8C7A7A;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      text-align: center;
+      padding: 40px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(224, 191, 184, 0.05) 0%, rgba(21,18,18,0) 100%);
+    }
+    h1 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
+    p { color: var(--text-muted); margin-top: 10px; font-size: 15px; }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1200px;
+      padding: 40px 20px 80px;
+      box-sizing: border-box;
+    }
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 35px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: var(--copper);
+      box-shadow: 0 10px 30px -10px rgba(224, 191, 184, 0.15);
+      transform: translateY(-5px);
+    }
+    
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 25px;
+      width: 100%;
+    }
+    
+    .logo-container {
+      width: 54px;
+      height: 54px;
+      flex-shrink: 0;
+    }
+    .logo-container svg { width: 100%; height: 100%; }
+    
+    .variant-info {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      padding-top: 15px;
+    }
+    .badge {
+      background-color: rgba(224, 191, 184, 0.1);
+      color: var(--copper);
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid rgba(224, 191, 184, 0.2);
+      margin-bottom: 25px;
+    }
+
+    /* Typography Classes */
+    .font-playfair { font-family: 'Playfair Display', serif; }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+    .font-montserrat { font-family: 'Montserrat', sans-serif; }
+    .font-outfit { font-family: 'Outfit', sans-serif; }
+    .font-prata { font-family: 'Prata', serif; }
+    .font-jost { font-family: 'Jost', sans-serif; }
+    .font-vibes { font-family: 'Great Vibes', cursive; font-size: 42px !important; line-height: 0.8; font-weight: normal !important; }
+    
+    /* Text Sizes & Spacing */
+    .title-text {
+      font-size: 32px;
+      line-height: 1;
+    }
+    .uppercase-spaced {
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .italic { font-style: italic; }
+    
+    /* Colors */
+    .color-cream { color: var(--text); }
+    .color-copper { color: var(--copper); }
+    .color-gold { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Вибір типографіки (Лого 4.3)</h1>
+    <p>Поєднання обраного мідного вінчика з різними шрифтами та кольорами.</p>
+  </header>
+
+  <div class="grid">
+    
+    <!-- 1 -->
+    <div class="card">
+      <div class="badge">Варіант 1</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-playfair color-cream" style="font-weight: 800;">Whisked</div>
+      </div>
+      <div class="variant-info">Playfair Display (Кремовий, Жирний)</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card">
+      <div class="badge">Варіант 2</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-cinzel color-copper" style="font-weight: 700;">WHISKED</div>
+      </div>
+      <div class="variant-info">Cinzel (Мідний, Великі літери)</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <div class="badge">Варіант 3</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-montserrat uppercase-spaced color-cream">WHISKED</div>
+      </div>
+      <div class="variant-info">Montserrat (Кремовий, Сучасний, Розріджений)</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="card">
+      <div class="badge">Варіант 4</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-cormorant italic color-copper" style="font-weight: 600; font-size: 38px;">Whisked</div>
+      </div>
+      <div class="variant-info">Cormorant Garamond (Мідний, Курсив)</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="card">
+      <div class="badge">Варіант 5</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-prata color-cream">Whisked</div>
+      </div>
+      <div class="variant-info">Prata (Кремовий, Елегантний)</div>
+    </div>
+
+    <!-- 6 -->
+    <div class="card">
+      <div class="badge">Варіант 6</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-vibes color-copper">Whisked</div>
+      </div>
+      <div class="variant-info">Great Vibes (Мідний, Рукописний)</div>
+    </div>
+
+    <!-- 7 -->
+    <div class="card">
+      <div class="badge">Варіант 7</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-outfit color-cream" style="font-weight: 700;">Whisked</div>
+      </div>
+      <div class="variant-info">Outfit (Кремовий, Чистий Гротеск)</div>
+    </div>
+
+    <!-- 8 -->
+    <div class="card">
+      <div class="badge">Варіант 8</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-playfair italic color-copper" style="font-weight: 600;">Whisked</div>
+      </div>
+      <div class="variant-info">Playfair Display (Мідний, Курсив)</div>
+    </div>
+
+    <!-- 9 -->
+    <div class="card">
+      <div class="badge">Варіант 9</div>
+      <div class="preview-header">
+        <div class="logo-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45)">
+            <path d="M12 22v-5"/><path d="M9 17h6"/><path d="M12 17c-3-2-4.5-5-4.5-8.5C7.5 4 12 2 12 2s4.5 2 4.5 6.5C16.5 12 15 15 12 17z"/><path d="M12 17c-1.5-2-2-5-2-8.5C10 5 12 3 12 3s2 2 2 5.5C14 12 13.5 15 12 17z"/>
+          </svg>
+        </div>
+        <div class="title-text font-jost uppercase-spaced color-copper">WHISKED</div>
+      </div>
+      <div class="variant-info">Jost (Мідний, Строгий, Розріджений)</div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import Logo from './ui/Logo';
 
 export default function PaywallModal({ isOpen, onClose, feature }) {
   const { t } = useTranslation();
@@ -31,11 +32,10 @@ export default function PaywallModal({ isOpen, onClose, feature }) {
             </div>
 
             <div className="p-8 pb-10 flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mb-6">
-                <Crown size={40} className="text-[#D4AF37]" />
+              <div className="flex flex-col items-center mb-3">
+                <Logo size={36} />
+                <span className="text-[#D4AF37] font-bold text-xs uppercase tracking-[0.2em] mt-2">Pro</span>
               </div>
-              
-              <h2 className="text-2xl font-bold text-[#F4EFEA] mb-3">Whisked Pro</h2>
               <p className="text-[#8C7A7A] text-sm mb-8 leading-relaxed">
                 {feature === 'recipes' 
                   ? 'Ви досягли ліміту безкоштовної версії (3 рецепти). ' 
