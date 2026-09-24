@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CustomSelect from './CustomSelect';
 
 export default function CustomPrompt({ config, onClose }) {
   const [values, setValues] = useState({});
@@ -21,10 +22,12 @@ export default function CustomPrompt({ config, onClose }) {
           <div key={f.name} className="mb-4">
             <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2 block">{f.label}</label>
             {f.type === 'select' ? (
-              <select value={values[f.name] || ''} onChange={e => setValues({...values, [f.name]: e.target.value})} className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] rounded-2xl p-4 outline-none font-medium appearance-none">
-                <option value="">Оберіть...</option>
-                {f.options.map(o => <option key={o} value={o}>{o}</option>)}
-              </select>
+              <CustomSelect 
+                value={values[f.name] || ''}
+                onChange={val => setValues({...values, [f.name]: val})}
+                options={[{value: '', label: 'Оберіть...'}, ...f.options.map(o => ({value: o, label: o}))]}
+                className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] rounded-2xl p-4 outline-none font-medium"
+              />
             ) : (
               <input
                 type={f.type || 'text'}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { ShoppingCart, PackageOpen, Trash2, Users, Clock, AlertCircle, Send } from 'lucide-react';
+import CustomSelect from '../ui/CustomSelect';
 
 const AddOrderForm = memo(function AddOrderForm({ recipes, inventory, preps, onSave, customers, initialData }) {
   const [cart, setCart] = useState(initialData?.items || []); 
@@ -112,15 +113,20 @@ const AddOrderForm = memo(function AddOrderForm({ recipes, inventory, preps, onS
 
           <div className="bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-2xl p-5 mb-2">
             <label className="text-[#D4AF37] text-[10px] uppercase font-bold tracking-widest mb-3 block">Додати позицію</label>
-            <select value={recipeId} onChange={e=>setRecipeId(e.target.value)} className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-xl mb-4 outline-none font-medium appearance-none">
-              <option value="">Оберіть десерт...</option>
-              {[...recipes].sort((a,b)=>(a.name||'').localeCompare(b.name||'')).map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-            </select>
+            <CustomSelect 
+              value={recipeId} 
+              onChange={setRecipeId} 
+              options={[{value: '', label: 'Оберіть десерт...'}, ...[...recipes].sort((a,b)=>(a.name||'').localeCompare(b.name||'')).map(r => ({value: r.id, label: r.name}))]}
+              className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-xl mb-4 outline-none font-medium" 
+            />
             
             {selectedRecipe && selectedRecipe.fillings?.length > 0 && (
-              <select value={fillingId} onChange={e=>setFillingId(e.target.value)} className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-4 rounded-xl mb-4 outline-none font-medium appearance-none">
-                {selectedRecipe.fillings.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
-              </select>
+              <CustomSelect 
+                value={fillingId} 
+                onChange={setFillingId} 
+                options={selectedRecipe.fillings.map(f => ({value: f.id, label: f.name}))}
+                className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-4 rounded-xl mb-4 outline-none font-medium" 
+              />
             )}
             
             <div className="grid grid-cols-2 gap-3 mb-4">

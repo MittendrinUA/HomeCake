@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Camera } from 'lucide-react'; 
 import { useTranslation } from 'react-i18next';
+import CustomSelect from './ui/CustomSelect';
 
 export default function AddRecipeForm({ onSave, type, initialCategory, allCategories }) {
   const { t } = useTranslation();
@@ -13,8 +14,16 @@ export default function AddRecipeForm({ onSave, type, initialCategory, allCatego
   const [file, setFile] = useState(null); 
   const [preview, setPreview] = useState('');
 
+  const categoryOptions = allCategories.map(c => ({ value: c, label: c }));
+  const unitOptions = [
+    { value: t('addRecipe.g'), label: t('addRecipe.g') },
+    { value: t('addRecipe.kg'), label: t('addRecipe.kg') },
+    { value: t('addRecipe.pcs'), label: t('addRecipe.pcs') },
+    { value: t('addRecipe.ml'), label: t('addRecipe.ml') }
+  ];
+
   return (
-    <div className="p-4 h-full">
+    <div className="p-4 h-full pb-20">
       <div className="bg-[#1E1919] border border-[#2A2323] rounded-[32px] p-6 shadow-lg">
         <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2 block">{type === 'prep' ? t('addRecipe.namePrep') : t('addRecipe.nameDessert')}</label>
         <input type="text" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-[#151212] border border-[#2A2323] focus:border-[#D4AF37] text-[#F4EFEA] p-4 rounded-2xl mb-6 outline-none font-medium" />
@@ -22,9 +31,12 @@ export default function AddRecipeForm({ onSave, type, initialCategory, allCatego
         {type === 'recipe' && (
           <div className="mb-6">
             <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2 block">{t('addRecipe.collection')}</label>
-            <select value={category} onChange={e=>setCategory(e.target.value)} className="w-full bg-[#151212] border border-[#2A2323] focus:border-[#D4AF37] text-[#F4EFEA] p-4 rounded-2xl outline-none font-medium appearance-none">
-              {allCategories.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <CustomSelect 
+              value={category} 
+              onChange={setCategory} 
+              options={categoryOptions} 
+              className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-4 rounded-2xl outline-none font-medium"
+            />
           </div>
         )}
         
@@ -35,12 +47,12 @@ export default function AddRecipeForm({ onSave, type, initialCategory, allCatego
           </div>
           <div>
             <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2 block">{t('addRecipe.units')}</label>
-            <select value={unit} onChange={e=>setUnit(e.target.value)} className="w-full bg-[#151212] border border-[#2A2323] focus:border-[#D4AF37] text-[#F4EFEA] p-4 rounded-2xl outline-none appearance-none">
-              <option value={t('addRecipe.g')}>{t('addRecipe.g')}</option>
-              <option value={t('addRecipe.kg')}>{t('addRecipe.kg')}</option>
-              <option value={t('addRecipe.pcs')}>{t('addRecipe.pcs')}</option>
-              <option value={t('addRecipe.ml')}>{t('addRecipe.ml')}</option>
-            </select>
+            <CustomSelect 
+              value={unit} 
+              onChange={setUnit} 
+              options={unitOptions} 
+              className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-4 rounded-2xl outline-none font-medium"
+            />
           </div>
         </div>
         

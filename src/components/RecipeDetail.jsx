@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronLeft, Edit2, Trash2, Plus, Minus, Save, X, Camera, Calculator, CheckCircle, FileText, ChevronRight } from 'lucide-react'; 
 import { useTranslation } from 'react-i18next';
+import CustomSelect from './ui/CustomSelect';
 
 export default function RecipeDetail({ item, type, inventory, preps, costFn, onUpdate, onDelete, onCook, askConfirm, askPrompt, allCategories, compressImage }) {
   const { t } = useTranslation();
@@ -12,6 +13,17 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
   
   const [targetYield, setTargetYield] = useState(item.baseYield || 1); 
   useEffect(() => { setTargetYield(item.baseYield || 1); }, [item.baseYield]);
+  
+  const ingredientOptions = useMemo(() => {
+    return [
+      { isGroup: true, label: t('recipeDetail.rawMaterial') || "📦 Сировина та мікси на складі" },
+      ...[...inventory].filter(i=>!i.isPrep).sort((a,b)=>(a.name||'').localeCompare(b.name||'')).map(i=>({value: `inv_${i.id}`, label: i.name})),
+      { isGroup: true, label: t('recipeDetail.techCards') || "📝 Тех. картки (Динамічні заготівлі)" },
+      ...[...preps].filter(p => p.id !== item.id).sort((a,b)=>(a.name||'').localeCompare(b.name||'')).map(p=>({value: `prep_${p.id}`, label: `[ТК] ${p.name}`})),
+      { isGroup: true, label: t('recipeDetail.readyBatches') || "🟣 Готові партії (Зі складу)" },
+      ...[...inventory].filter(i=>i.isPrep).sort((a,b)=>(a.name||'').localeCompare(b.name||'')).map(i=>({value: `inv_${i.id}`, label: i.name}))
+    ];
+  }, [inventory, preps, item.id, t]);
   
   const [instModal, setInstModal] = useState(null); 
   const [showInst, setShowInst] = useState({});
@@ -243,21 +255,18 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
         
         {isAddingTo === 'base' && (
           <div className="bg-[#1E1919] border border-[#2A2323] p-4 rounded-2xl mb-4">
-            <select className="w-full bg-[#151212] text-[#F4EFEA] border border-[#2A2323] p-3 rounded-xl mb-3 outline-none" value={newIngFullId} onChange={e=>setNewIngFullId(e.target.value)}>
-              <option value="">{t('recipeDetail.chooseComponent') || 'Оберіть компонент...'}</option>
-              <optgroup label={t('recipeDetail.rawMaterial') || "📦 Сировина та мікси на складі"}>
-                {[...inventory].filter(i=>!i.isPrep).sort((a,b)=>a.name.localeCompare(b.name)).map(i=><option key={`inv_${i.id}`} value={`inv_${i.id}`}>{i.name}</option>)}
-              </optgroup>
-              <optgroup label={t('recipeDetail.techCards') || "📝 Тех. картки (Динамічні заготівлі)"}>
-                {[...preps].filter(p => p.id !== item.id).sort((a,b)=>a.name.localeCompare(b.name)).map(p=><option key={`prep_${p.id}`} value={`prep_${p.id}`}>[ТК] {p.name}</option>)}
-              </optgroup>
-              <optgroup label={t('recipeDetail.readyBatches') || "🟣 Готові партії (Зі складу)"}>
-                {[...inventory].filter(i=>i.isPrep).sort((a,b)=>a.name.localeCompare(b.name)).map(i=><option key={`inv_${i.id}`} value={`inv_${i.id}`}>{i.name}</option>)}
-              </optgroup>
-            </select>
+            <CustomSelect 
+              value={newIngFullId} 
+              onChange={setNewIngFullId} 
+              options={ingredientOptions} 
+              label="Вибір компонента"
+              placeholder={t('recipeDetail.chooseComponent') || 'Оберіть компонент...'}
+              searchable={true}
+              className="w-full bg-[#151212] text-[#F4EFEA] border border-[#2A2323] p-4 rounded-xl mb-3 outline-none" 
+            />
             <div className="flex gap-2 mb-3">
-              <input type="number" inputMode="decimal" placeholder={`К-ть (${newIngUnit})`} value={newIngAmount} onChange={e=>setNewIngAmount(e.target.value)} className="w-1/2 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-3 rounded-xl outline-none"/>
-              <input type="text" placeholder="Група" value={newIngGroup} onChange={e=>setNewIngGroup(e.target.value)} className="w-1/2 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-3 rounded-xl outline-none"/>
+              <input type="number" inputMode="decimal" placeholder={`К-ть (${newIngUnit})`} value={newIngAmount} onChange={e=>setNewIngAmount(e.target.value)} className="w-1/2 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-xl outline-none font-bold text-lg text-center transition-colors shadow-inner"/>
+              <input type="text" placeholder="Група" value={newIngGroup} onChange={e=>setNewIngGroup(e.target.value)} className="w-1/2 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-xl outline-none text-center transition-colors shadow-inner"/>
             </div>
             <div className="flex gap-2">
               <button onClick={()=> {
@@ -267,8 +276,8 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
                   const newObj = isPrepL ? { prepId: actualId, amount: Number(newIngAmount), group: newIngGroup } : { invId: actualId, amount: Number(newIngAmount), group: newIngGroup };
                   handleUpdateField('ingredients', [...(item.ingredients||[]), newObj]); setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');
                 }
-              }} className="flex-1 bg-[#D4AF37] text-[#151212] font-bold py-3 rounded-xl">{t('common.done') || 'ОК'}</button>
-              <button onClick={()=>{setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');}} className="flex-1 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] py-3 rounded-xl font-bold">{t('recipeDetail.cancel') || 'Відміна'}</button>
+              }} className="flex-1 bg-[#D4AF37] text-[#151212] shadow-lg shadow-[#D4AF37]/20 font-bold py-3.5 rounded-xl uppercase tracking-widest text-xs active:scale-95">{t('common.done') || 'Додати'}</button>
+              <button onClick={()=>{setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');}} className="flex-1 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] py-3.5 rounded-xl font-bold uppercase tracking-widest text-xs active:scale-95">{t('recipeDetail.cancel') || 'Відміна'}</button>
             </div>
           </div>
         )}
@@ -321,21 +330,18 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
                 </div>
                 {isAddingTo === fil.id && (
                   <div className="bg-[#151212] border border-[#2A2323] p-4 rounded-2xl mb-4">
-                    <select className="w-full bg-[#1E1919] text-[#F4EFEA] border border-[#2A2323] p-3 rounded-xl mb-3 outline-none" value={newIngFullId} onChange={e=>setNewIngFullId(e.target.value)}>
-                      <option value="">{t('recipeDetail.chooseComponent') || 'Оберіть компонент...'}</option>
-                      <optgroup label={t('recipeDetail.rawMaterial') || "📦 Сировина та мікси на складі"}>
-                        {[...inventory].filter(i=>!i.isPrep).sort((a,b)=>a.name.localeCompare(b.name)).map(i=><option key={`inv_${i.id}`} value={`inv_${i.id}`}>{i.name}</option>)}
-                      </optgroup>
-                      <optgroup label={t('recipeDetail.techCards') || "📝 Тех. картки (Динамічні заготівлі)"}>
-                        {[...preps].filter(p => p.id !== item.id).sort((a,b)=>a.name.localeCompare(b.name)).map(p=><option key={`prep_${p.id}`} value={`prep_${p.id}`}>[ТК] {p.name}</option>)}
-                      </optgroup>
-                      <optgroup label={t('recipeDetail.readyBatches') || "🟣 Готові партії (Зі складу)"}>
-                        {[...inventory].filter(i=>i.isPrep).sort((a,b)=>a.name.localeCompare(b.name)).map(i=><option key={`inv_${i.id}`} value={`inv_${i.id}`}>{i.name}</option>)}
-                      </optgroup>
-                    </select>
+                    <CustomSelect 
+                      value={newIngFullId} 
+                      onChange={setNewIngFullId} 
+                      options={ingredientOptions} 
+                      label="Вибір компонента"
+                      placeholder={t('recipeDetail.chooseComponent') || 'Оберіть компонент...'}
+                      searchable={true}
+                      className="w-full bg-[#1E1919] text-[#F4EFEA] border border-[#2A2323] p-4 rounded-xl mb-3 outline-none" 
+                    />
                     <div className="flex gap-2 mb-3">
-                      <input type="number" inputMode="decimal" placeholder={`К-ть (${newIngUnit})`} value={newIngAmount} onChange={e=>setNewIngAmount(e.target.value)} className="w-1/2 bg-[#1E1919] border border-[#2A2323] text-[#F4EFEA] p-3 rounded-xl outline-none"/>
-                      <input type="text" placeholder="Група" value={newIngGroup} onChange={e=>setNewIngGroup(e.target.value)} className="w-1/2 bg-[#1E1919] border border-[#2A2323] text-[#F4EFEA] p-3 rounded-xl outline-none"/>
+                      <input type="number" inputMode="decimal" placeholder={`К-ть (${newIngUnit})`} value={newIngAmount} onChange={e=>setNewIngAmount(e.target.value)} className="w-1/2 bg-[#1E1919] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-xl outline-none font-bold text-lg text-center transition-colors shadow-inner"/>
+                      <input type="text" placeholder="Група" value={newIngGroup} onChange={e=>setNewIngGroup(e.target.value)} className="w-1/2 bg-[#1E1919] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-xl outline-none text-center transition-colors shadow-inner"/>
                     </div>
                     <div className="flex gap-2">
                       <button onClick={()=> {
@@ -345,8 +351,8 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
                           const newObj = isPrepL ? { prepId: actualId, amount: Number(newIngAmount), group: newIngGroup } : { invId: actualId, amount: Number(newIngAmount), group: newIngGroup };
                           handleUpdateField('fillings', item.fillings.map(f=>f.id===fil.id?{...f, ingredients:[...f.ingredients, newObj]}:f)); setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');
                         }
-                      }} className="flex-1 bg-[#D4AF37] text-[#151212] font-bold py-2 rounded-xl">{t('common.done') || 'ОК'}</button>
-                      <button onClick={()=>{setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');}} className="flex-1 bg-[#1E1919] border border-[#2A2323] text-[#F4EFEA] py-2 rounded-xl">{t('recipeDetail.cancel') || 'Відміна'}</button>
+                      }} className="flex-1 bg-[#D4AF37] text-[#151212] shadow-lg shadow-[#D4AF37]/20 font-bold py-3.5 rounded-xl uppercase tracking-widest text-xs active:scale-95">{t('common.done') || 'Додати'}</button>
+                      <button onClick={()=>{setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');}} className="flex-1 bg-[#1E1919] border border-[#2A2323] text-[#F4EFEA] py-3.5 rounded-xl font-bold uppercase tracking-widest text-xs active:scale-95">{t('recipeDetail.cancel') || 'Відміна'}</button>
                     </div>
                   </div>
                 )}
