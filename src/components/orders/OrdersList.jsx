@@ -1,20 +1,47 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useMemo } from 'react';
 import { PackageOpen, CheckCircle, CheckSquare, Square, Edit2, Trash2, CalendarClock, ChevronRight } from 'lucide-react';
 
 const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, onComplete, invoiceMode, selectedForInvoice, toggleSelection, onEditOrder }) {
   const [filter, setFilter] = useState('planned'); 
   useEffect(() => { if(invoiceMode) setFilter('completed'); }, [invoiceMode]);
   
-  const filteredSales = sales.filter(s => filter === 'completed' ? s.status !== 'planned' : s.status === 'planned');
-  
-  const sortedSales = [...filteredSales].sort((a,b) => { 
-    if (filter === 'planned') { 
-      const timeA = new Date(`${a.date || '1970-01-01'}T${a.dueTime||'00:00'}`).getTime(); 
-      const timeB = new Date(`${b.date || '1970-01-01'}T${b.dueTime||'00:00'}`).getTime(); 
-      return timeA - timeB; 
-    } 
-    return (b.createdAt || 0) - (a.createdAt || 0); 
-  });
+  const processedSales = useMemo(() => {
+    const filteredSales = sales.filter(s => filter === 'completed' ? s.status !== 'planned' : s.status === 'planned');
+    const sortedSales = [...filteredSales].sort((a,b) => { 
+      if (filter === 'planned') { 
+        const timeA = new Date(`${a.date || '1970-01-01'}T${a.dueTime||'00:00'}`).getTime(); 
+        const timeB = new Date(`${b.date || '1970-01-01'}T${b.dueTime||'00:00'}`).getTime(); 
+        return timeA - timeB; 
+      } 
+      return (b.createdAt || 0) - (a.createdAt || 0); 
+    });
+
+    return sortedSales.map(order => {
+      const items = order.items || [{ recipeId: order.recipeId, fillingId: order.fillingId, quantity: order.quantity, sellPrice: order.sellPrice }]; 
+      let tr = (order.decorPrice || 0); 
+      let dynamicTc = (order.decorPrice || 0) + (order.internalCost || 0); 
+      
+      const itemsDisplay = items.map((item, idx) => { 
+        const rec = recipes.find(r => r.id === item.recipeId); if (!rec) return null; 
+        const fil = rec.fillings?.find(f => f.id === item.fillingId); 
+        const dN = fil ? `${rec.name} (${fil.name})` : rec.name; 
+        dynamicTc += (costFn(rec, item.fillingId) / Math.max(rec.baseYield || 1, 0.001)) * item.quantity; 
+        tr += (item.sellPrice || 0); 
+        
+        return {
+          id: idx,
+          name: dN,
+          quantity: item.quantity,
+          unit: rec.unit
+        };
+      }); 
+      
+      const tc = order.historicalCost !== undefined ? order.historicalCost : dynamicTc;
+      const profit = tr - tc; 
+      
+      return { ...order, tr, tc, profit, itemsDisplay };
+    });
+  }, [sales, filter, recipes, costFn]);
 
   const [swipeId, setSwipeId] = useState(null); 
   let startX = 0; let startY = 0;
@@ -43,35 +70,14 @@ const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, 
         </div>
       )}
       
-      {sortedSales.length === 0 && (
+      {processedSales.length === 0 && (
         <div className="p-8 text-center flex flex-col items-center mt-10">
           <PackageOpen size={48} className="text-[#2A2323] mb-4" />
           <p className="text-[#8C7A7A] font-medium">Список порожній.</p>
         </div>
       )}
       
-      {sortedSales.map(order => { 
-        const items = order.items || [{ recipeId: order.recipeId, fillingId: order.fillingId, quantity: order.quantity, sellPrice: order.sellPrice }]; 
-        let tr = (order.decorPrice || 0); 
-        let dynamicTc = (order.decorPrice || 0) + (order.internalCost || 0); 
-        
-        const itemsDisplay = items.map((item, idx) => { 
-          const rec = recipes.find(r => r.id === item.recipeId); if (!rec) return null; 
-          const fil = rec.fillings?.find(f => f.id === item.fillingId); 
-          const dN = fil ? `${rec.name} (${fil.name})` : rec.name; 
-          dynamicTc += (costFn(rec, item.fillingId) / Math.max(rec.baseYield || 1, 0.001)) * item.quantity; 
-          tr += (item.sellPrice || 0); 
-          
-          return (
-            <div key={idx} className="flex justify-between items-center py-2 border-b border-[#2A2323] last:border-0">
-              <span className="text-[#F4EFEA] text-sm pr-2 flex-1 font-medium">• {dN}</span>
-              <span className="text-[#D4AF37] font-bold text-xs bg-[#151212] px-2 py-1 rounded-lg border border-[#2A2323]">{item.quantity} {rec.unit}</span>
-            </div>
-          ); 
-        }); 
-        
-        const tc = order.historicalCost !== undefined ? order.historicalCost : dynamicTc;
-        const profit = tr - tc; 
+      {processedSales.map(order => { 
         const isSelected = selectedForInvoice.includes(order.id); 
         
         return (
@@ -110,7 +116,12 @@ const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, 
                     {order.customer && <p className="text-[#F4EFEA] font-black text-xl mb-3 tracking-tight">{order.customer}</p>}
                     
                     <div className="bg-[#151212] rounded-2xl p-4 mb-4 border border-[#2A2323]">
-                      {itemsDisplay}
+                      {order.itemsDisplay.map(item => (
+                        <div key={item.id} className="flex justify-between items-center py-2 border-b border-[#2A2323] last:border-0">
+                          <span className="text-[#F4EFEA] text-sm pr-2 flex-1 font-medium">• {item.name}</span>
+                          <span className="text-[#D4AF37] font-bold text-xs bg-[#151212] px-2 py-1 rounded-lg border border-[#2A2323]">{item.quantity} {item.unit}</span>
+                        </div>
+                      ))}
                       {order.decorPrice > 0 && <div className="flex justify-between py-2 text-[#8C7A7A] text-xs mt-1 border-t border-[#2A2323] pt-2 font-medium"><span>+ Декор / Коробка</span><span className="text-[#F4EFEA]">{order.decorPrice} ₴</span></div>}
                     </div>
                   </div>
@@ -118,9 +129,9 @@ const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, 
               </div>
               
               <div className={`grid grid-cols-3 gap-2 p-3 rounded-2xl ${isSelected ? 'bg-[#D4AF37]/5' : 'bg-[#151212]'} border border-[#2A2323]`}>
-                <div className="text-center"><p className="text-[8px] uppercase font-bold text-[#8C7A7A] mb-1 tracking-widest">Заг. Чек</p><p className="text-[#D4AF37] font-bold text-base">{tr.toFixed(2)}₴</p></div>
-                <div className="text-center border-l border-r border-[#2A2323]"><p className="text-[8px] uppercase font-bold text-[#8C7A7A] mb-1 tracking-widest">Витрати</p><p className="text-[#F4EFEA] font-bold text-base">{tc.toFixed(2)}₴</p></div>
-                <div className="text-center"><p className="text-[8px] uppercase font-bold text-[#8C7A7A] mb-1 tracking-widest">Прибуток</p><p className="text-[#5B7A5A] font-black text-base">{profit > 0 ? '+' : ''}{profit.toFixed(2)}₴</p></div>
+                <div className="text-center"><p className="text-[8px] uppercase font-bold text-[#8C7A7A] mb-1 tracking-widest">Заг. Чек</p><p className="text-[#D4AF37] font-bold text-base">{order.tr.toFixed(2)}₴</p></div>
+                <div className="text-center border-l border-r border-[#2A2323]"><p className="text-[8px] uppercase font-bold text-[#8C7A7A] mb-1 tracking-widest">Витрати</p><p className="text-[#F4EFEA] font-bold text-base">{order.tc.toFixed(2)}₴</p></div>
+                <div className="text-center"><p className="text-[8px] uppercase font-bold text-[#8C7A7A] mb-1 tracking-widest">Прибуток</p><p className="text-[#5B7A5A] font-black text-base">{order.profit > 0 ? '+' : ''}{order.profit.toFixed(2)}₴</p></div>
               </div>
               
               {filter === 'planned' && !invoiceMode && (

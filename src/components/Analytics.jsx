@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { BarChart2, Package, Star, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,56 +9,71 @@ export default function Analytics({ sales, recipes, inventory, costFn, customers
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  const filteredSales = sales.filter(s => {
-    if (s.status === 'planned') return false; 
-    if (period === 'all') return true;
-    const sDate = new Date(s.date || s.createdAt); 
-    if (period === 'month') return sDate.getMonth() === currentMonth && sDate.getFullYear() === currentYear;
-    if (period === 'year') return sDate.getFullYear() === currentYear;
-    if (period === 'lastYear') return sDate.getFullYear() === currentYear - 1;
-    return true;
-  });
+  const { filteredSales, filteredWaste, tr, tc, customerStats, totalWasteLoss, p, m, iv, topC } = useMemo(() => {
+    const fSales = sales.filter(s => {
+      if (s.status === 'planned') return false; 
+      if (period === 'all') return true;
+      const sDate = new Date(s.date || s.createdAt); 
+      if (period === 'month') return sDate.getMonth() === currentMonth && sDate.getFullYear() === currentYear;
+      if (period === 'year') return sDate.getFullYear() === currentYear;
+      if (period === 'lastYear') return sDate.getFullYear() === currentYear - 1;
+      return true;
+    });
 
-  const filteredWaste = waste.filter(w => {
-    if (period === 'all') return true;
-    const wDate = new Date(w.date);
-    if (period === 'month') return wDate.getMonth() === currentMonth && wDate.getFullYear() === currentYear;
-    if (period === 'year') return wDate.getFullYear() === currentYear;
-    if (period === 'lastYear') return wDate.getFullYear() === currentYear - 1;
-    return true;
-  });
+    const fWaste = waste.filter(w => {
+      if (period === 'all') return true;
+      const wDate = new Date(w.date);
+      if (period === 'month') return wDate.getMonth() === currentMonth && wDate.getFullYear() === currentYear;
+      if (period === 'year') return wDate.getFullYear() === currentYear;
+      if (period === 'lastYear') return wDate.getFullYear() === currentYear - 1;
+      return true;
+    });
 
-  let tr = 0, tc = 0; 
-  const customerStats = {};
+    let localTr = 0, localTc = 0; 
+    const cStats = {};
 
-  filteredSales.forEach(o => { 
-    let saleRev = o.decorPrice || 0;
-    let dynamicSaleCost = (o.decorPrice || 0) + (o.internalCost || 0);
-    
-    const is = o.items || [{ recipeId: o.recipeId, fillingId: o.fillingId, quantity: o.quantity, sellPrice: o.sellPrice }]; 
-    
-    is.forEach(i => { 
-      saleRev += (i.sellPrice || 0); 
-      const r = recipes.find(r => r.id === i.recipeId); 
-      if (r) { dynamicSaleCost += (costFn(r, i.fillingId) / Math.max(r.baseYield || 1, 0.001)) * i.quantity; } 
-    }); 
+    fSales.forEach(o => { 
+      let saleRev = o.decorPrice || 0;
+      let dynamicSaleCost = (o.decorPrice || 0) + (o.internalCost || 0);
+      
+      const is = o.items || [{ recipeId: o.recipeId, fillingId: o.fillingId, quantity: o.quantity, sellPrice: o.sellPrice }]; 
+      
+      is.forEach(i => { 
+        saleRev += (i.sellPrice || 0); 
+        const r = recipes.find(rec => rec.id === i.recipeId); 
+        if (r) { dynamicSaleCost += (costFn(r, i.fillingId) / Math.max(r.baseYield || 1, 0.001)) * i.quantity; } 
+      }); 
 
-    tr += saleRev;
-    tc += o.historicalCost !== undefined ? o.historicalCost : dynamicSaleCost;
+      localTr += saleRev;
+      localTc += o.historicalCost !== undefined ? o.historicalCost : dynamicSaleCost;
 
-    if (o.customer) {
-      const cName = o.customer.trim();
-      if (!customerStats[cName]) customerStats[cName] = { name: cName, spent: 0, count: 0 };
-      customerStats[cName].spent += saleRev;
-      customerStats[cName].count += 1;
-    }
-  });
+      if (o.customer) {
+        const cName = o.customer.trim();
+        if (!cStats[cName]) cStats[cName] = { name: cName, spent: 0, count: 0 };
+        cStats[cName].spent += saleRev;
+        cStats[cName].count += 1;
+      }
+    });
 
-  const totalWasteLoss = filteredWaste.reduce((sum, w) => sum + (w.lossAmount || 0), 0);
-  const p = tr - tc - totalWasteLoss;
-  const m = tr > 0 ? ((p / tr) * 100).toFixed(1) : 0;
-  const iv = inventory.reduce((s, i) => s + ((i.price || 0) * (i.quantity || 0)), 0);
-  const topC = Object.values(customerStats).sort((a,b) => b.spent - a.spent).slice(0, 5);
+    const tWL = fWaste.reduce((sum, w) => sum + (w.lossAmount || 0), 0);
+    const localP = localTr - localTc - tWL;
+    const localM = localTr > 0 ? ((localP / localTr) * 100).toFixed(1) : 0;
+    const localIv = inventory.reduce((s, i) => s + ((i.price || 0) * (i.quantity || 0)), 0);
+    const topClients = Object.values(cStats).sort((a,b) => b.spent - a.spent).slice(0, 5);
+
+    return {
+      filteredSales: fSales,
+      filteredWaste: fWaste,
+      tr: localTr,
+      tc: localTc,
+      customerStats: cStats,
+      totalWasteLoss: tWL,
+      p: localP,
+      m: localM,
+      iv: localIv,
+      topC: topClients
+    };
+  }, [sales, waste, recipes, inventory, period, currentMonth, currentYear, costFn]);
 
   return (
     <div className="p-4 pb-28">

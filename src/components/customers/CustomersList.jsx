@@ -4,7 +4,7 @@ import { Search, Users, ChevronRight } from 'lucide-react';
 const CustomersList = memo(function CustomersList({ customers, sales, onClick }) {
   const [searchTerm, setSearchTerm] = useState(''); 
   
-  const enhancedCustomers = customers.map(c => {
+  const enhancedCustomers = React.useMemo(() => customers.map(c => {
      const safeName = c?.name ? String(c.name) : 'Без імені';
      const cSales = sales.filter(s => s.customer?.toString().toLowerCase().trim() === safeName.toLowerCase().trim());
      const orderCount = cSales.length;
@@ -13,7 +13,7 @@ const CustomersList = memo(function CustomersList({ customers, sales, onClick })
          return sum + itemsList.reduce((acc, i) => acc + (i.sellPrice || 0), 0) + (s.decorPrice || 0);
      }, 0);
      return { ...c, name: safeName, orderCount, totalSpent };
-  });
+  }), [customers, sales]);
 
   const filtered = enhancedCustomers.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
   
