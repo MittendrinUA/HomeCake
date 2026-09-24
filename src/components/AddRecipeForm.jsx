@@ -7,7 +7,7 @@ export default function AddRecipeForm({ onSave, type, initialCategory, allCatego
   const { t } = useTranslation();
   const [name, setName] = useState(''); 
   const [category, setCategory] = useState(initialCategory || t('common.other')); 
-  const [unit, setUnit] = useState(type === 'prep' ? t('addRecipe.g') : t('addRecipe.pcs')); 
+  const [unit, setUnit] = useState(type === 'prep' ? 'г' : 'шт'); 
   const [baseYield, setBaseYield] = useState('1'); 
   const [defaultPrice, setDefaultPrice] = useState(''); 
   const [minOrder, setMinOrder] = useState('1'); // НОВЕ ПОЛЕ
@@ -16,10 +16,10 @@ export default function AddRecipeForm({ onSave, type, initialCategory, allCatego
 
   const categoryOptions = allCategories.map(c => ({ value: c, label: c }));
   const unitOptions = [
-    { value: t('addRecipe.g'), label: t('addRecipe.g') },
-    { value: t('addRecipe.kg'), label: t('addRecipe.kg') },
-    { value: t('addRecipe.pcs'), label: t('addRecipe.pcs') },
-    { value: t('addRecipe.ml'), label: t('addRecipe.ml') }
+    { value: 'г', label: t('addRecipe.g') },
+    { value: 'кг', label: t('addRecipe.kg') },
+    { value: 'шт', label: t('addRecipe.pcs') },
+    { value: 'мл', label: t('addRecipe.ml') }
   ];
 
   return (

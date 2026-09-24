@@ -1,8 +1,9 @@
-﻿import { useEffect } from 'react';
+import { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import useStore from '../store/useStore';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Manages Firebase Auth state and all Firestore real-time subscriptions.
@@ -15,9 +16,11 @@ export function useFirebaseData() {
     setPreps, setCategories, setWaste, setInventoryLogs,
   } = useStore();
 
+  const { t } = useTranslation();
+
   // --- Auth listener ---
   useEffect(() => {
-    setLoadingStep('Авторизація...');
+    setLoadingStep(t('common.authorizing', 'Авторизація...'));
     let unsubProfile = null;
 
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -58,7 +61,7 @@ export function useFirebaseData() {
     if (!uid) return;
 
     setIsLoading(true);
-    setLoadingStep('Синхронізація баз...');
+    setLoadingStep(t('common.syncing', 'Синхронізація баз...'));
     let loaded = 0;
     const checkLoaded = () => { loaded++; if (loaded >= 8) setIsLoading(false); };
 

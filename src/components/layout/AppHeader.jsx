@@ -1,4 +1,4 @@
-﻿import React, { memo } from 'react';
+import React, { memo } from 'react';
 import { ChevronLeft, Menu, Receipt, X, ClipboardList, Plus } from 'lucide-react';
 
 const AppHeader = memo(function AppHeader({

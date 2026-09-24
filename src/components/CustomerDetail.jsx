@@ -1,8 +1,10 @@
+import useStore from '../store/useStore';
 import React from 'react';
 import { Trash2, Edit2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function CustomerDetail({ item, onUpdate, onDelete, askPrompt, sales }) {
+  const currency = useStore(s => s.settings?.currency || 'грн');
   const { t } = useTranslation();
   if (!item) return null;
   
@@ -46,7 +48,7 @@ export default function CustomerDetail({ item, onUpdate, onDelete, askPrompt, sa
         <div className="grid grid-cols-2 gap-3 mb-6">
           <div className="bg-[#151212] border border-[#2A2323] p-4 rounded-2xl text-center shadow-inner">
              <p className="text-[#8C7A7A] text-[9px] uppercase font-bold tracking-widest mb-1">{t('customerDetail.revenue')}</p>
-             <p className="text-[#D4AF37] font-black text-xl">{totalSpent.toFixed(0)} ₴</p>
+             <p className="text-[#D4AF37] font-black text-xl">{totalSpent.toFixed(0)} {currency}</p>
           </div>
           <div className="bg-[#151212] border border-[#2A2323] p-4 rounded-2xl text-center shadow-inner">
              <p className="text-[#8C7A7A] text-[9px] uppercase font-bold tracking-widest mb-1">{t('customerDetail.ordersCount')}</p>
@@ -100,7 +102,7 @@ export default function CustomerDetail({ item, onUpdate, onDelete, askPrompt, sa
                    </p>
                 </div>
                 <div className="text-right">
-                   <p className="text-[#D4AF37] font-black">{orderTotal.toFixed(0)} ₴</p>
+                   <p className="text-[#D4AF37] font-black">{orderTotal.toFixed(0)} {currency}</p>
                 </div>
              </div>
            );

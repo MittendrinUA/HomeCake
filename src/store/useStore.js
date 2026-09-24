@@ -5,6 +5,17 @@ const useStore = create((set) => ({
   user: null,
   isAuthenticated: false,
 
+  // Settings
+  settings: {
+    language: 'uk',
+    currency: 'грн',
+    notifications: {
+      orderDeadlineDays: 1, // Сповіщати за X днів до дедлайну
+      expiryAlertDays: 3,   // Сповіщати за X днів до закінчення терміну придатності
+    }
+  },
+  setSettings: (settings) => set({ settings }),
+
   // Data
   inventory: [],
   recipes: [],
@@ -17,7 +28,7 @@ const useStore = create((set) => ({
 
   // Loaders
   isLoading: true,
-  loadingStep: 'Завантаження...',
+  loadingStep: null,
 
   // Actions
   setInventory:    (inventory)    => set({ inventory }),

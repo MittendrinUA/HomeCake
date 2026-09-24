@@ -42,5 +42,8 @@ button, a, input, textarea, select {
 }
 
 .pt-safe {
-  padding-top: env(safe-area-inset-top);
+  padding-top: max(env(safe-area-inset-top), 16px);
+}
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 16px);
 }

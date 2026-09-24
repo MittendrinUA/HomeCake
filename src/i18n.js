@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { autoTranslations } from './autoTranslations';
 
 // Основні переклади (поки що додамо лише ті, що потрібні для старту, інші додаватимемо поступово)
 const resources = {
@@ -10,8 +11,10 @@ const resources = {
         description: "Sign in with your Google account to get access.",
         loginWithGoogle: "Sign in with Google",
         selectLanguage: "Select your language",
-        saveLanguage: "Continue"
+        saveLanguage: "Continue",
+        logout: "Sign Out"
       },
+      auto: autoTranslations.en,
       menu: {
         sales: "Sales",
         recipes: "Catalog",
@@ -19,7 +22,43 @@ const resources = {
         inventory: "Inventory",
         customers: "Clients",
         analytics: "Analytics",
+        trash: "Trash",
+        mainSection: "Main",
+        managementSection: "Management",
+        dataSection: "Data",
         changeLanguage: "Change Language"
+      },
+      settings: {
+        title: "Settings",
+        tabGeneral: "General",
+        tabNotifications: "Notifications",
+        language: "Language",
+        currency: "Currency",
+        appearance: "Appearance",
+        inventoryImages: "Inventory Photos",
+        privacySecurity: "Privacy & Security",
+        privacyPolicy: "Privacy Policy",
+        deleteAccount: "Delete my account and all data",
+        saveSettings: "Save Settings",
+        deleteAccountConfirm: "Are you sure you want to delete your account and all associated data? This action is irreversible.",
+        accountDeleted: "Account successfully deleted",
+        requiresRecentLogin: "Re-authentication required. Please log out and log in again before deleting your account.",
+        deleteError: "Error deleting account: ",
+        orders: "Orders",
+        orderReminder: "Remind about order deadline:",
+        day1: "day",
+        days: "days",
+        inventory: "Inventory",
+        expiryReminder: "Remind about ingredients expiration:",
+        expiryNote: "*Add expiration date when creating or replenishing ingredient stock."
+      },
+      inventory: {
+        searchPlaceholder: "Search inventory...",
+        emptyTitle: "Inventory is empty",
+        emptyDesc: "Your ingredients will be displayed here.",
+        prep: "Prep",
+        mix: "Mix",
+        showMore: "Show more"
       },
       shoppingListPreview: {
         title: "Shopping List",
@@ -31,6 +70,7 @@ const resources = {
       },
       common: {
         loading: "Loading...",
+        authorizing: "Authorizing...",
         syncing: "Syncing databases...",
         saving: "Saving...",
         initializing: "Initializing...",
@@ -303,7 +343,8 @@ const resources = {
         description: "Увійдіть через свій обліковий запис Google, щоб отримати доступ.",
         loginWithGoogle: "Увійти з Google",
         selectLanguage: "Оберіть вашу мову",
-        saveLanguage: "Продовжити"
+        saveLanguage: "Продовжити",
+        logout: "Вийти з акаунту"
       },
       menu: {
         sales: "Замовлення",
@@ -312,7 +353,11 @@ const resources = {
         inventory: "Склад",
         customers: "Клієнти",
         analytics: "Аналітика та CRM",
-        changeLanguage: "Змінити мову"
+        changeLanguage: "Змінити мову",
+        trash: "Кошик",
+        mainSection: "Головне",
+        managementSection: "Управління",
+        dataSection: "Дані"
       },
       shoppingListPreview: {
         title: "Список закупівель",
@@ -324,6 +369,7 @@ const resources = {
       },
       common: {
         loading: "Завантаження...",
+        authorizing: "Авторизація...",
         syncing: "Синхронізація баз...",
         saving: "Збереження...",
         initializing: "Ініціалізація...",
@@ -596,8 +642,10 @@ const resources = {
         description: "Войдите через свой аккаунт Google, чтобы получить доступ.",
         loginWithGoogle: "Войти с Google",
         selectLanguage: "Выберите ваш язык",
-        saveLanguage: "Продолжить"
+        saveLanguage: "Продолжить",
+        logout: "Выйти из аккаунта"
       },
+      auto: autoTranslations.ru,
       menu: {
         sales: "Заказы",
         recipes: "Каталог",
@@ -605,7 +653,43 @@ const resources = {
         inventory: "Склад",
         customers: "Клиенты",
         analytics: "Аналитика и CRM",
+        trash: "Корзина",
+        mainSection: "Главное",
+        managementSection: "Управление",
+        dataSection: "Данные",
         changeLanguage: "Сменить язык"
+      },
+      settings: {
+        title: "Настройки",
+        tabGeneral: "Основные",
+        tabNotifications: "Уведомления",
+        language: "Язык",
+        currency: "Валюта",
+        appearance: "Внешний вид",
+        inventoryImages: "Фото на складе",
+        privacySecurity: "Безопасность",
+        privacyPolicy: "Политика конфиденциальности",
+        deleteAccount: "Удалить аккаунт и данные",
+        saveSettings: "Сохранить",
+        deleteAccountConfirm: "Удалить аккаунт навсегда?",
+        accountDeleted: "Аккаунт удален",
+        requiresRecentLogin: "Требуется повторная авторизация.",
+        deleteError: "Ошибка: ",
+        orders: "Заказы",
+        orderReminder: "Напоминать о дедлайне за:",
+        day1: "день",
+        days: "дней",
+        inventory: "Склад",
+        expiryReminder: "Напоминать об истечении срока годности за:",
+        expiryNote: "*Добавьте срок при пополнении запасов."
+      },
+      inventory: {
+        searchPlaceholder: "Поиск на складе...",
+        emptyTitle: "Склад пуст",
+        emptyDesc: "Здесь будут ваши ингредиенты.",
+        prep: "Заготовка",
+        mix: "Микс",
+        showMore: "Показать еще"
       },
       shoppingListPreview: {
         title: "Список покупок",
@@ -617,6 +701,7 @@ const resources = {
       },
       common: {
         loading: "Загрузка...",
+        authorizing: "Авторизация...",
         syncing: "Синхронизация баз...",
         saving: "Сохранение...",
         initializing: "Инициализация...",
@@ -878,7 +963,6 @@ const resources = {
         addFillingProcess: "+ Добавить процесс начинки",
         process: "Процесс",
         save: "Сохранить",
-        describeSteps: "Опишите детально шаги приготовления..."
       }
     }
   }
@@ -888,8 +972,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: localStorage.getItem('user_language') || 'en', // Мова за замовчуванням береться з локального сховища або англійська
-    fallbackLng: 'en', // Якщо переклад відсутній, використовувати англійську
+    lng: localStorage.getItem('user_language') || 'uk',
+    fallbackLng: false,
     interpolation: {
       escapeValue: false 
     }

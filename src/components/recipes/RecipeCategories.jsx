@@ -20,7 +20,7 @@ const RecipeCategories = memo(function RecipeCategories({ recipes, dbCategories,
       <div className="flex justify-between items-center mb-6 px-1">
         <h2 className="text-[#F4EFEA] font-bold text-xl tracking-wide">{t('recipes.collections', 'Колекції')}</h2>
         <div className="flex gap-2">
-          <button onClick={() => setEditingCat({name: '', icon: ''})} className="text-[#D4AF37] bg-[#D4AF37]/10 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest active:scale-95">+ {t('common.new', 'Нова')}</button>
+          <button onClick={() => setEditingCat({name: '', icon: ''})} className="text-[#D4AF37] bg-[#D4AF37]/10 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest active:scale-95">{t('app.newCollection', '+ Нова')}</button>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -34,7 +34,7 @@ const RecipeCategories = memo(function RecipeCategories({ recipes, dbCategories,
                 <div className="relative z-10 flex flex-col items-center justify-center h-full p-3 text-center">
                   {cat.icon ? (<span className="text-3xl mb-2 drop-shadow-md">{cat.icon}</span>) : (<Folder size={30} className={`${count > 0 ? (hasImage ? 'text-[#F4EFEA]' : 'text-[#D4AF37]') : 'text-[#8C7A7A]'} mb-2 opacity-90`} strokeWidth={1.5} />)}
                   <h3 className="text-[#F4EFEA] font-bold text-sm leading-tight mb-1 drop-shadow-md">{cat.name}</h3>
-                  <p className="text-[#8C7A7A] text-[9px] uppercase tracking-widest font-bold">{count} {t('common.pcs', 'шт')}</p>
+                  <p className="text-[#8C7A7A] text-[9px] uppercase tracking-widest font-bold">{count} {t('app.pcs', 'шт')}</p>
                 </div>
               </div>
               

@@ -95,7 +95,7 @@ export default function InventoryHistory({ historyLogs, onOrderClick }) {
                 </div>
                 <div className="text-right shrink-0 ml-2">
                    <p className={`font-black text-sm ${getColor(log.change)}`}>
-                      {log.change > 0 ? '+' : ''}{log.change} {log.unit}
+                      {log.change > 0 ? '+' : ''}{log.change} {{'г': t('addRecipe.g', 'г'), 'кг': t('addRecipe.kg', 'кг'), 'шт': t('addRecipe.pcs', 'шт'), 'мл': t('addRecipe.ml', 'мл')}[log.unit] || log.unit}
                    </p>
                 </div>
              </div>

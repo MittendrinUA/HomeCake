@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { ShoppingCart, Book, Package, BarChart2, Users, Utensils, Globe, CheckCircle, X, LogOut, Shield, Trash2, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Book, Package, BarChart2, Users, Utensils, Settings, CheckCircle, X, LogOut, Trash2, ChevronRight } from 'lucide-react';
 import { getAuth, GoogleAuthProvider, linkWithCredential, signInWithCredential } from 'firebase/auth';
 import Logo from '../ui/Logo';
 
@@ -38,7 +38,10 @@ function ActionBtn({ icon, label, onClick, isLast, isDestructive, isPrimary }) {
   );
 }
 
-const DrawerMenu = memo(function DrawerMenu({ activeTab, user, onNavigate, onClose, onShowPaywall, onShowLanguage, showToast }) {
+import { useTranslation } from 'react-i18next';
+
+const DrawerMenu = memo(function DrawerMenu({ activeTab, user, onNavigate, onClose, onShowPaywall, onShowSettings, showToast }) {
+  const { t } = useTranslation();
   const [isClosing, setIsClosing] = useState(false);
 
   const handleClose = () => {
@@ -54,15 +57,15 @@ const DrawerMenu = memo(function DrawerMenu({ activeTab, user, onNavigate, onClo
       const credential = GoogleAuthProvider.credential(googleUser.authentication.idToken);
       await linkWithCredential(getAuth().currentUser, credential);
       handleClose();
-      showToast("Акаунт успішно підв'язано!");
+      showToast(t('auth.accountLinked', "Акаунт успішно підв'язано!"));
     } catch (e) {
       if (e.code === 'auth/credential-already-in-use') {
         const cred = GoogleAuthProvider.credentialFromError(e) || (googleUser ? GoogleAuthProvider.credential(googleUser.authentication.idToken) : null);
         if (cred) await signInWithCredential(getAuth(), cred);
         handleClose();
-        showToast("Увійшли в існуючий акаунт");
+        showToast(t('auth.loggedInExisting', "Увійшли в існуючий акаунт"));
       } else {
-        alert("Помилка входу: " + e.message);
+        alert(t('auth.loginError', "Помилка входу: ") + e.message);
       }
     }
   };
@@ -95,36 +98,35 @@ const DrawerMenu = memo(function DrawerMenu({ activeTab, user, onNavigate, onClo
         {/* Scrollable Navigation Area */}
         <div className="flex-1 overflow-y-auto custom-scrollbar px-5 pb-12">
           
-          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">Головне</p>
+          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">{t('menu.mainSection', 'Головне')}</p>
           <div className="bg-[#1E1919] rounded-[28px] border border-[#2A2323] mb-6 overflow-hidden shadow-xl shadow-black/20">
-            <DrawerBtn icon={<ShoppingCart size={20}/>} label="Замовлення" active={activeTab==='sales'} onClick={() => { onNavigate('sales'); handleClose(); }}/>
-            <DrawerBtn icon={<Book size={20}/>} label="Каталог десертів" active={activeTab==='recipes'} onClick={() => { onNavigate('recipes'); handleClose(); }}/>
-            <DrawerBtn icon={<Utensils size={20}/>} label="Заготівлі" active={activeTab==='preps'} onClick={() => { onNavigate('preps'); handleClose(); }} isLast/>
+            <DrawerBtn icon={<ShoppingCart size={20}/>} label={t('menu.sales', 'Замовлення')} active={activeTab==='sales'} onClick={() => { onNavigate('sales'); handleClose(); }}/>
+            <DrawerBtn icon={<Book size={20}/>} label={t('menu.recipes', 'Каталог десертів')} active={activeTab==='recipes'} onClick={() => { onNavigate('recipes'); handleClose(); }}/>
+            <DrawerBtn icon={<Utensils size={20}/>} label={t('menu.preps', 'Заготівлі')} active={activeTab==='preps'} onClick={() => { onNavigate('preps'); handleClose(); }} isLast/>
           </div>
 
-          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">Управління</p>
+          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">{t('menu.managementSection', 'Управління')}</p>
           <div className="bg-[#1E1919] rounded-[28px] border border-[#2A2323] mb-6 overflow-hidden shadow-xl shadow-black/20">
-            <DrawerBtn icon={<Package size={20}/>} label="Склад інгредієнтів" active={activeTab==='inventory'} onClick={() => { onNavigate('inventory'); handleClose(); }}/>
-            <DrawerBtn icon={<Users size={20}/>} label="Клієнти (CRM)" active={activeTab==='customers'} onClick={() => { onNavigate('customers'); handleClose(); }}/>
-            <DrawerBtn icon={<BarChart2 size={20}/>} label="Аналітика" active={activeTab==='analytics'} onClick={() => { onNavigate('analytics'); handleClose(); }} isLast/>
+            <DrawerBtn icon={<Package size={20}/>} label={t('menu.inventory', 'Склад інгредієнтів')} active={activeTab==='inventory'} onClick={() => { onNavigate('inventory'); handleClose(); }}/>
+            <DrawerBtn icon={<Users size={20}/>} label={t('menu.customers', 'Клієнти (CRM)')} active={activeTab==='customers'} onClick={() => { onNavigate('customers'); handleClose(); }}/>
+            <DrawerBtn icon={<BarChart2 size={20}/>} label={t('menu.analytics', 'Аналітика')} active={activeTab==='analytics'} onClick={() => { onNavigate('analytics'); handleClose(); }} isLast/>
           </div>
 
-          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">Дані</p>
+          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">{t('menu.dataSection', 'Дані')}</p>
           <div className="bg-[#1E1919] rounded-[28px] border border-[#2A2323] mb-8 overflow-hidden shadow-xl shadow-black/20">
-            <DrawerBtn icon={<Trash2 size={20}/>} label="Кошик" active={activeTab==='trash'} onClick={() => { onNavigate('trash'); handleClose(); }} isLast/>
+            <DrawerBtn icon={<Trash2 size={20}/>} label={t('menu.trash', 'Кошик')} active={activeTab==='trash'} onClick={() => { onNavigate('trash'); handleClose(); }} isLast/>
           </div>
 
-          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">Налаштування</p>
+          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">{t('settings.title', 'Налаштування')}</p>
           <div className="bg-[#1E1919] rounded-[28px] border border-[#2A2323] mb-10 overflow-hidden shadow-xl shadow-black/20">
-            <ActionBtn icon={<Shield size={20}/>} label="Privacy Policy" onClick={() => { window.open('https://whisked.app/privacy', '_blank'); handleClose(); }}/>
-            <ActionBtn icon={<Globe size={20}/>} label="Мова / Language" onClick={() => { onShowLanguage(); handleClose(); }} isLast={user?.isAnonymous}/>
+            <ActionBtn icon={<Settings size={20}/>} label={t('settings.title', 'Налаштування')} onClick={() => { onShowSettings(); handleClose(); }} isLast={user?.isAnonymous}/>
             
             {user?.isAnonymous ? (
-              <ActionBtn icon={<CheckCircle size={20}/>} label="Увійти в акаунт" onClick={handleLinkGoogle} isPrimary isLast/>
+              <ActionBtn icon={<CheckCircle size={20}/>} label={t('auth.loginWithGoogle', 'Увійти в акаунт')} onClick={handleLinkGoogle} isPrimary isLast/>
             ) : (
               <>
-                <ActionBtn icon={<LogOut size={20}/>} label="Вийти з акаунту" onClick={async () => { await getAuth().signOut(); handleClose(); window.location.reload(); }}/>
-                <ActionBtn icon={<Trash2 size={20}/>} label="Видалити акаунт" onClick={() => { if(window.confirm("Увага! Видалення акаунту назавжди зітре всі ваші рецепти, клієнтів та налаштування. Продовжити?")) { window.dispatchEvent(new CustomEvent('delete-account')); } handleClose(); }} isDestructive isLast/>
+                <ActionBtn icon={<LogOut size={20}/>} label={t('auth.logout', 'Вийти з акаунту')} onClick={async () => { await getAuth().signOut(); handleClose(); window.location.reload(); }}/>
+
               </>
             )}
           </div>

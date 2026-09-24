@@ -1,8 +1,10 @@
+import useStore from '../store/useStore';
 import React, { useState, useMemo } from 'react';
 import { BarChart2, Package, Star, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function Analytics({ sales, recipes, inventory, costFn, customers, waste, onCustomerClick }) {
+  const currency = useStore(s => s.settings?.currency || 'грн');
   const { t } = useTranslation();
   const [period, setPeriod] = useState('month');
   const now = new Date();
@@ -92,18 +94,18 @@ export default function Analytics({ sales, recipes, inventory, costFn, customers
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="bg-[#1E1919] border border-[#2A2323] p-5 rounded-[24px] shadow-lg">
           <p className="text-[#8C7A7A] text-[10px] uppercase tracking-widest font-bold mb-1">{t('analytics.revenue')}</p>
-          <p className="text-[#F4EFEA] text-2xl font-bold">{tr.toFixed(2)} ₴</p>
+          <p className="text-[#F4EFEA] text-2xl font-bold">{tr.toFixed(2)} {currency}</p>
         </div>
         <div className="bg-[#1E1919] border border-[#2A2323] p-5 rounded-[24px] shadow-lg">
           <p className="text-[#8C7A7A] text-[10px] uppercase tracking-widest font-bold mb-1">{t('analytics.cost')}</p>
-          <p className="text-[#F4EFEA] text-2xl font-bold">{tc.toFixed(2)} ₴</p>
+          <p className="text-[#F4EFEA] text-2xl font-bold">{tc.toFixed(2)} {currency}</p>
         </div>
       </div>
 
       <div className="bg-gradient-to-br from-[#D4AF37]/20 to-[#151212] border border-[#D4AF37]/30 p-6 rounded-[32px] mb-8 shadow-lg relative overflow-hidden">
         <div className="absolute right-0 top-0 opacity-10 pointer-events-none translate-x-1/4 -translate-y-1/4"><BarChart2 size={120} /></div>
         <p className="text-[#D4AF37] text-xs uppercase font-bold tracking-widest mb-1">{t('analytics.netProfit')}</p>
-        <p className="text-[#F4EFEA] text-4xl font-black mb-4">{p.toFixed(2)} ₴</p>
+        <p className="text-[#F4EFEA] text-4xl font-black mb-4">{p.toFixed(2)} {currency}</p>
         
         <div className="w-full h-2 bg-[#1E1919] rounded-full overflow-hidden mb-2 border border-[#2A2323]">
            <div className="h-full bg-[#D4AF37] rounded-full transition-all duration-500 ease-out" style={{ width: `${Math.max(0, Math.min(100, m))}%` }}></div>
@@ -117,7 +119,7 @@ export default function Analytics({ sales, recipes, inventory, costFn, customers
         {totalWasteLoss > 0 && (
           <div className="border-t border-[#D4AF37]/20 pt-3 mt-1 flex justify-between items-center">
              <p className="text-red-400/80 text-[10px] uppercase tracking-widest font-bold">{t('analytics.wasteLoss')}</p>
-             <p className="text-red-400 font-bold text-sm">-{totalWasteLoss.toFixed(2)} ₴</p>
+             <p className="text-red-400 font-bold text-sm">-{totalWasteLoss.toFixed(2)} {currency}</p>
           </div>
         )}
       </div>
@@ -126,7 +128,7 @@ export default function Analytics({ sales, recipes, inventory, costFn, customers
       <div className="bg-[#1E1919] border border-[#2A2323] p-6 rounded-[32px] shadow-lg mb-8 flex items-center justify-between">
         <div>
            <p className="text-[#8C7A7A] text-[10px] uppercase tracking-widest font-bold mb-1">{t('analytics.moneyInGoods')}</p>
-           <p className="text-[#D4AF37] text-3xl font-black">{iv.toFixed(2)} <span className="text-xl text-[#8C7A7A]">₴</span></p>
+           <p className="text-[#D4AF37] text-3xl font-black">{iv.toFixed(2)} <span className="text-xl text-[#8C7A7A]">{currency}</span></p>
         </div>
         <div className="bg-[#151212] p-3 rounded-2xl border border-[#2A2323]"><Package size={24} className="text-[#8C7A7A]" /></div>
       </div>
@@ -149,7 +151,7 @@ export default function Analytics({ sales, recipes, inventory, costFn, customers
                   </div>
                 </div>
                 <div className="text-right flex items-center gap-2">
-                   <p className="text-[#D4AF37] font-black">{c.spent.toFixed(2)} ₴</p>
+                   <p className="text-[#D4AF37] font-black">{c.spent.toFixed(2)} {currency}</p>
                    <ChevronRight size={18} className="text-[#8C7A7A]" />
                 </div>
               </div>
