@@ -11,12 +11,8 @@ export default function CustomSelect({ value, onChange, options, label = "Виб
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      setSearch(''); // Reset search on open
-    } else {
-      document.body.style.overflow = 'unset';
+      setSearch('');
     }
-    return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
 
   const finalOptions = options.filter((opt, index, arr) => {
@@ -48,6 +44,7 @@ export default function CustomSelect({ value, onChange, options, label = "Виб
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
               onClick={() => setIsOpen(false)}
               className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             />
@@ -55,7 +52,7 @@ export default function CustomSelect({ value, onChange, options, label = "Виб
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
               className="relative bg-[#151212] w-full max-w-md mx-auto rounded-t-[32px] border-t border-[#2A2323] p-6 pb-safe shadow-2xl flex flex-col max-h-[85vh]"
             >
               <div className="w-12 h-1.5 bg-[#2A2323] rounded-full mx-auto mb-6 shrink-0" />

@@ -232,6 +232,14 @@ export default function App() {
     } catch (e) { showToast('Помилка'); }
   };
 
+  const handleRestoreOrder = async (order) => {
+    try {
+      const { updateDoc } = await import('firebase/firestore');
+      await updateDoc(doc(db, 'bakery', user.uid, 'sales', order.id), { status: 'planned', historicalCost: null });
+      showToast('Повернено в активні!');
+    } catch (e) { showToast('Помилка'); }
+  };
+
   const checkSubscription = (feature) => {
     return true; // PAYWALL DISABLED FOR GOOGLE PLAY SUBMISSION
   };
@@ -255,7 +263,9 @@ export default function App() {
 
   const hasBack = !!(showInvoicePreview || showShoppingListPreview || editingOrder || isAddingNew || selectedItem || (selectedCategory && activeTab === 'recipes') || invoiceMode);
 
-  if (isLoading) {
+  const isInitialLoading = isLoading && (!user && !isAuthenticated);
+
+  if (isInitialLoading) {
     return (
       <div className="h-[100dvh] w-full bg-[#151212] flex flex-col items-center justify-center text-[#F4EFEA] font-sans">
          <div className="w-16 h-16 border-4 border-[#2A2323] border-t-[#D4AF37] rounded-full animate-spin mb-6 shadow-lg"></div>
@@ -271,6 +281,13 @@ export default function App() {
 
   return (
     <div className="h-[100dvh] w-full bg-black text-[#F4EFEA] font-sans overflow-hidden select-none relative">
+      {isLoading && !isInitialLoading && (
+        <div className="absolute inset-0 bg-[#151212]/50 backdrop-blur-[2px] z-[500] flex flex-col items-center justify-center text-[#F4EFEA] font-sans animate-in fade-in duration-200">
+           <div className="w-16 h-16 border-4 border-[#2A2323] border-t-[#D4AF37] rounded-full animate-spin mb-6 shadow-lg"></div>
+           <h2 className="text-xl font-bold tracking-widest text-[#D4AF37] drop-shadow-lg">WHISKED</h2>
+           <p className="text-[#8C7A7A] mt-2 font-medium tracking-wide animate-pulse drop-shadow-md">{loadingStep}</p>
+        </div>
+      )}
       {isMenuOpen && <DrawerMenu activeTab={activeTab} user={user} onNavigate={changeMainTab} onClose={() => setIsMenuOpen(false)} onShowPaywall={() => setShowPaywall(true)} onShowLanguage={() => setShowLanguageModal(true)} showToast={showToast} />}
 
       <div className="h-full max-w-md mx-auto bg-[#151212] relative shadow-2xl flex flex-col pt-safe">
@@ -350,7 +367,7 @@ export default function App() {
                   }} askConfirm={askConfirm} askPrompt={askPrompt} /></Suspense> : null
                 ) : (
                   <div className="pt-4">
-                    {activeTab === 'sales' && <OrdersList sales={activeSales} recipes={activeRecipes} costFn={(obj, fId) => calculateCost(obj, fId, activeInventory, activePreps)} onDelete={(id) => handleDeleteDoc('sales', id, "Перемістити замовлення у Кошик?")} onComplete={handleCompleteOrder} invoiceMode={invoiceMode} selectedForInvoice={selectedForInvoice} toggleSelection={(id) => setSelectedForInvoice(prev => prev.includes(id) ? prev.filter(i=>i!==id) : [...prev, id])} onEditOrder={setEditingOrder} />}
+                    {activeTab === 'sales' && <OrdersList sales={activeSales} recipes={activeRecipes} costFn={(obj, fId) => calculateCost(obj, fId, activeInventory, activePreps)} onDelete={(id) => handleDeleteDoc('sales', id, "Перемістити замовлення у Кошик?")} onComplete={handleCompleteOrder} onRestore={handleRestoreOrder} invoiceMode={invoiceMode} selectedForInvoice={selectedForInvoice} toggleSelection={(id) => setSelectedForInvoice(prev => prev.includes(id) ? prev.filter(i=>i!==id) : [...prev, id])} onEditOrder={setEditingOrder} />}
                     {activeTab === 'customers' && <CustomersList customers={activeCustomers} sales={activeSales} onClick={setSelectedItem} />}
                     {activeTab === 'recipes' && !selectedCategory && <RecipeCategories recipes={activeRecipes} dbCategories={activeCategories} allUniqueNames={availableCategoriesList} onSelectCategory={setSelectedCategory} onSaveCategory={async (id, oldName, newName, icon, file) => {
                        // simplified category save

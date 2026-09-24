@@ -1,8 +1,8 @@
 import React, { useState, useEffect, memo, useMemo } from 'react';
-import { PackageOpen, CheckCircle, CheckSquare, Square, Edit2, Trash2, CalendarClock, ChevronRight } from 'lucide-react';
+import { PackageOpen, CheckCircle, CheckSquare, Square, Edit2, Trash2, CalendarClock, ChevronRight, RotateCcw } from 'lucide-react';
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 
-const OrderItem = memo(({ order, filter, invoiceMode, isSelected, onDelete, onComplete, toggleSelection, onEditOrder }) => {
+const OrderItem = memo(({ order, filter, invoiceMode, isSelected, onDelete, onComplete, onRestore, toggleSelection, onEditOrder }) => {
   const [isCompletedAnim, setIsCompletedAnim] = useState(false);
   const x = useMotionValue(0);
 
@@ -59,6 +59,9 @@ const OrderItem = memo(({ order, filter, invoiceMode, isSelected, onDelete, onCo
                 
                 {!invoiceMode && (
                   <div className="flex items-center gap-1.5">
+                    {filter === 'completed' && onRestore && (
+                      <button onClick={(e) => { e.stopPropagation(); onRestore(order); }} className="text-[#8C7A7A] hover:text-[#5B7A5A] p-2 bg-[#151212] rounded-xl border border-[#2A2323] active:scale-95 transition-transform"><RotateCcw size={14} /></button>
+                    )}
                     <button onClick={(e) => { e.stopPropagation(); onEditOrder(order); }} className="text-[#8C7A7A] hover:text-[#D4AF37] p-2 bg-[#151212] rounded-xl border border-[#2A2323] active:scale-95 transition-transform"><Edit2 size={14} /></button>
                     <button onClick={(e) => { e.stopPropagation(); onDelete(order.id); }} className="text-[#8C7A7A] hover:text-red-400 p-2 bg-[#151212] rounded-xl border border-[#2A2323] active:scale-95 transition-transform"><Trash2 size={14} /></button>
                   </div>
@@ -94,7 +97,7 @@ const OrderItem = memo(({ order, filter, invoiceMode, isSelected, onDelete, onCo
   );
 });
 
-const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, onComplete, invoiceMode, selectedForInvoice, toggleSelection, onEditOrder }) {
+const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, onComplete, onRestore, invoiceMode, selectedForInvoice, toggleSelection, onEditOrder }) {
   const [filter, setFilter] = useState('planned'); 
   useEffect(() => { if(invoiceMode) setFilter('completed'); }, [invoiceMode]);
   
@@ -162,6 +165,7 @@ const OrdersList = memo(function OrdersList({ sales, recipes, costFn, onDelete, 
             isSelected={selectedForInvoice.includes(order.id)}
             onDelete={onDelete}
             onComplete={onComplete}
+            onRestore={onRestore}
             toggleSelection={toggleSelection}
             onEditOrder={onEditOrder}
           />
