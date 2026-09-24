@@ -1,6 +1,8 @@
 import React, { useState, memo } from 'react';
 import { Camera } from 'lucide-react';
 
+import CustomSelect from '../ui/CustomSelect';
+
 const AddInventoryForm = memo(function AddInventoryForm({ onSave }) {
   const [name, setName] = useState(''); 
   const [quantity, setQuantity] = useState(''); 
@@ -11,6 +13,13 @@ const AddInventoryForm = memo(function AddInventoryForm({ onSave }) {
   const [isMix, setIsMix] = useState(false);
 
   const calcPrice = (Number(quantity) > 0 && Number(totalCost) > 0) ? (Number(totalCost) / Number(quantity)) : 0;
+
+  const unitOptions = [
+    { value: 'г', label: 'Грами' },
+    { value: 'кг', label: 'Кілограми' },
+    { value: 'шт', label: 'Штуки' },
+    { value: 'мл', label: 'Мілілітри' }
+  ];
 
   return (
     <div className="p-4 h-full">
@@ -32,12 +41,13 @@ const AddInventoryForm = memo(function AddInventoryForm({ onSave }) {
                 </div>
                 <div>
                    <label className="text-[#8C7A7A] text-[10px] uppercase font-bold mb-2 block tracking-widest">Одиниці</label>
-                   <select value={unit} onChange={e=>setUnit(e.target.value)} className="w-full bg-[#151212] border border-[#2A2323] focus:border-[#D4AF37] text-[#F4EFEA] p-4 rounded-2xl outline-none appearance-none">
-                      <option value="г">Грами</option>
-                      <option value="кг">Кілограми</option>
-                      <option value="шт">Штуки</option>
-                      <option value="мл">Мілілітри</option>
-                   </select>
+                   <CustomSelect 
+                     value={unit} 
+                     onChange={setUnit} 
+                     options={unitOptions} 
+                     label="Одиниці виміру"
+                     className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-4 rounded-2xl outline-none" 
+                   />
                 </div>
               </div>
               
@@ -69,7 +79,26 @@ const AddInventoryForm = memo(function AddInventoryForm({ onSave }) {
              </label>
           </div>
 
-          <button onClick={() => onSave({ name, isMix, mixItems: [], quantity: isMix ? 0 : Number(quantity), price: isMix ? 0 : Number(calcPrice.toFixed(2)), unit: isMix ? 'г' : unit }, file)} disabled={!name || (!isMix && (!totalCost || !quantity))} className="w-full bg-[#D4AF37] disabled:opacity-50 text-[#151212] py-4 rounded-2xl font-bold uppercase tracking-widest text-sm shadow-lg shadow-[#D4AF37]/20 active:scale-95">Зберегти на склад</button>
+          <button onClick={() => {
+            let finalUnit = isMix ? 'г' : unit;
+            let finalQty = isMix ? 0 : Number(quantity);
+            let finalPrice = isMix ? 0 : Number(calcPrice.toFixed(4));
+            
+            if (finalUnit === 'кг') {
+              finalQty *= 1000;
+              finalPrice /= 1000;
+              finalUnit = 'г';
+            }
+
+            onSave({ 
+              name, 
+              isMix, 
+              mixItems: [], 
+              quantity: finalQty, 
+              price: finalPrice, 
+              unit: finalUnit 
+            }, file);
+          }} disabled={!name || (!isMix && (!totalCost || !quantity))} className="w-full bg-[#D4AF37] disabled:opacity-50 text-[#151212] py-4 rounded-2xl font-bold uppercase tracking-widest text-sm shadow-lg shadow-[#D4AF37]/20 active:scale-95">Зберегти на склад</button>
        </div>
     </div>
   );
