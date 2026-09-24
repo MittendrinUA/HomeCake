@@ -1,5 +1,5 @@
 {
-  "name": "bakery-app",
+  "name": "whisked",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,10 +12,19 @@
   "dependencies": {
     "@capacitor/android": "^8.5.2",
     "@capacitor/core": "^8.5.2",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3",
+    "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "firebase": "^12.10.0",
+    "framer-motion": "^13.3.0",
+    "i18next": "^26.4.2",
     "lucide-react": "^0.577.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-i18next": "^17.0.14",
+    "react-router-dom": "^7.18.3",
+    "sonner": "^2.0.8",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.2",

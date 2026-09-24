@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Android 15 (API 35) enforces edge-to-edge by default.
+        windowTranslucentStatus is ignored on API 35+, which causes
+        env(safe-area-inset-top) to return 0 in the WebView.
+        This override uses the correct API-35-compatible approach:
+        transparent bars + no fitsSystemWindows (handled in MainActivity).
+    -->
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:fitsSystemWindows">false</item>
+    </style>
+</resources>

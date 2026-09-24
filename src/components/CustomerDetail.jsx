@@ -1,10 +1,12 @@
 import React from 'react';
 import { Trash2, Edit2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function CustomerDetail({ item, onUpdate, onDelete, askPrompt, sales }) {
+  const { t } = useTranslation();
   if (!item) return null;
   
-  const safeName = item?.name ? String(item.name) : 'Без імені';
+  const safeName = item?.name ? String(item.name) : t('customerDetail.noName');
   const safeSales = sales || []; 
   
   const cSales = safeSales.filter(s => {
@@ -35,45 +37,45 @@ export default function CustomerDetail({ item, onUpdate, onDelete, askPrompt, sa
            <div className="pr-10">
              <h2 className="text-2xl font-bold text-[#F4EFEA] leading-tight mb-1">
                {safeName}
-               <Edit2 size={14} className="inline text-[#8C7A7A] hover:text-[#D4AF37] ml-2 cursor-pointer mb-1 active:scale-90 transition-transform" onClick={() => askPrompt && askPrompt("Ім'я", [{name: 'val', label: 'Ім\'я клієнта', defaultValue: safeName}], (res) => { if(res.val) onUpdate({name: res.val}) })}/>
+               <Edit2 size={14} className="inline text-[#8C7A7A] hover:text-[#D4AF37] ml-2 cursor-pointer mb-1 active:scale-90 transition-transform" onClick={() => askPrompt && askPrompt(t('customerDetail.promptName'), [{name: 'val', label: t('customerDetail.promptNameLabel'), defaultValue: safeName}], (res) => { if(res.val) onUpdate({name: res.val}) })}/>
              </h2>
-             <p className="text-[#8C7A7A] text-xs font-medium">Клієнт з {item.lastOrderDate || 'невідомо'}</p>
+             <p className="text-[#8C7A7A] text-xs font-medium">{t('customerDetail.clientSince')}{item.lastOrderDate || t('customerDetail.unknown')}</p>
            </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-6">
           <div className="bg-[#151212] border border-[#2A2323] p-4 rounded-2xl text-center shadow-inner">
-             <p className="text-[#8C7A7A] text-[9px] uppercase font-bold tracking-widest mb-1">Виручка</p>
+             <p className="text-[#8C7A7A] text-[9px] uppercase font-bold tracking-widest mb-1">{t('customerDetail.revenue')}</p>
              <p className="text-[#D4AF37] font-black text-xl">{totalSpent.toFixed(0)} ₴</p>
           </div>
           <div className="bg-[#151212] border border-[#2A2323] p-4 rounded-2xl text-center shadow-inner">
-             <p className="text-[#8C7A7A] text-[9px] uppercase font-bold tracking-widest mb-1">Замовлень</p>
+             <p className="text-[#8C7A7A] text-[9px] uppercase font-bold tracking-widest mb-1">{t('customerDetail.ordersCount')}</p>
              <p className="text-[#F4EFEA] font-black text-xl">{orderCount}</p>
           </div>
         </div>
 
         <div className="space-y-4">
            <div>
-              <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-1.5 block ml-1">Телефон</label>
+              <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-1.5 block ml-1">{t('customerDetail.phone')}</label>
               <div className="flex items-center justify-between bg-[#151212] border border-[#2A2323] p-3.5 rounded-xl">
-                 <span className="text-[#F4EFEA] text-sm font-medium">{item.phone || 'Не вказано'}</span>
-                 <Edit2 size={14} className="text-[#8C7A7A] hover:text-[#D4AF37] cursor-pointer active:scale-90 transition-transform" onClick={() => askPrompt && askPrompt("Телефон", [{name: 'val', label: 'Номер телефону', type: 'tel', defaultValue: item.phone || ''}], (res) => { onUpdate({phone: res.val}); })}/>
+                 <span className="text-[#F4EFEA] text-sm font-medium">{item.phone || t('customerDetail.notSpecified')}</span>
+                 <Edit2 size={14} className="text-[#8C7A7A] hover:text-[#D4AF37] cursor-pointer active:scale-90 transition-transform" onClick={() => askPrompt && askPrompt(t('customerDetail.phone'), [{name: 'val', label: t('customerDetail.promptPhoneLabel'), type: 'tel', defaultValue: item.phone || ''}], (res) => { onUpdate({phone: res.val}); })}/>
               </div>
            </div>
            <div>
-              <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-1.5 block ml-1">Instagram / Telegram</label>
+              <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-1.5 block ml-1">{t('customerDetail.socials')}</label>
               <div className="flex items-center justify-between bg-[#151212] border border-[#2A2323] p-3.5 rounded-xl">
-                 <span className="text-[#F4EFEA] text-sm font-medium">{item.instagram || 'Не вказано'}</span>
-                 <Edit2 size={14} className="text-[#8C7A7A] hover:text-[#D4AF37] cursor-pointer active:scale-90 transition-transform" onClick={() => askPrompt && askPrompt("Соцмережі", [{name: 'val', label: 'Нікнейм або посилання', defaultValue: item.instagram || ''}], (res) => { onUpdate({instagram: res.val}); })}/>
+                 <span className="text-[#F4EFEA] text-sm font-medium">{item.instagram || t('customerDetail.notSpecified')}</span>
+                 <Edit2 size={14} className="text-[#8C7A7A] hover:text-[#D4AF37] cursor-pointer active:scale-90 transition-transform" onClick={() => askPrompt && askPrompt(t('customerDetail.promptSocials'), [{name: 'val', label: t('customerDetail.promptSocialsLabel'), defaultValue: item.instagram || ''}], (res) => { onUpdate({instagram: res.val}); })}/>
               </div>
            </div>
            <div>
-              <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-1.5 block ml-1">Нотатки (смаки, алергії)</label>
+              <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-1.5 block ml-1">{t('customerDetail.notes')}</label>
               <div className="relative">
                  <textarea 
                    defaultValue={item.notes || ''} 
                    onBlur={(e) => onUpdate({notes: e.target.value})}
-                   placeholder="Напр: Алергія на мед, любить шоколад..." 
+                   placeholder={t('customerDetail.notesPlaceholder')} 
                    className="w-full bg-[#151212] text-[#F4EFEA] p-4 rounded-xl border border-[#2A2323] outline-none focus:border-[#D4AF37] min-h-[100px] text-sm resize-y custom-scrollbar transition-colors"
                  />
               </div>
@@ -81,9 +83,9 @@ export default function CustomerDetail({ item, onUpdate, onDelete, askPrompt, sa
         </div>
       </div>
 
-      <h3 className="text-[#F4EFEA] font-bold text-lg mb-4 px-2 tracking-wide">Історія замовлень клієнта</h3>
+      <h3 className="text-[#F4EFEA] font-bold text-lg mb-4 px-2 tracking-wide">{t('customerDetail.orderHistory')}</h3>
       {cSales.length === 0 ? (
-         <p className="text-[#8C7A7A] text-sm px-2">Немає замовлень.</p>
+         <p className="text-[#8C7A7A] text-sm px-2">{t('customerDetail.noOrders')}</p>
       ) : (
          cSales.map(s => {
            const itemsList = s.items || [{ sellPrice: s.sellPrice || 0 }];
@@ -94,7 +96,7 @@ export default function CustomerDetail({ item, onUpdate, onDelete, askPrompt, sa
                 <div>
                    <p className="text-[#F4EFEA] font-bold text-sm mb-1">{s.date}</p>
                    <p className={`text-[10px] uppercase tracking-widest font-bold ${s.status !== 'planned' ? 'text-[#5B7A5A]' : 'text-[#D4AF37]'}`}>
-                     {s.status !== 'planned' ? '✓ Видано' : '⏳ Заплановано'}
+                     {s.status !== 'planned' ? t('customerDetail.issued') : t('customerDetail.planned')}
                    </p>
                 </div>
                 <div className="text-right">

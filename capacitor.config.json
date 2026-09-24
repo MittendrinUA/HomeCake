@@ -1,5 +1,22 @@
 {
-  "appId": "com.mittendrinua.homecake",
-  "appName": "bakery-app",
-  "webDir": "dist"
+  "appId": "com.whisked.app",
+  "appName": "Whisked",
+  "webDir": "dist",
+  "plugins": {
+    "GoogleAuth": {
+      "scopes": ["profile", "email"],
+      "serverClientId": "236979354452-dlt4329gv7vmtba8f6jvvubd1f4ud41m.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    },
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#151212",
+      "androidSplashResourceName": "splash"
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#151212",
+      "overlaysWebView": true
+    }
+  }
 }

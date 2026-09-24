@@ -40,3 +40,7 @@ button, a, input, textarea, select {
     border-color: inherit;
   }
 }
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}

@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">bakery-app</string>
-    <string name="title_activity_main">bakery-app</string>
+    <string name="app_name">Whisked</string>
+    <string name="title_activity_main">Whisked</string>
     <string name="package_name">com.mittendrinua.homecake</string>
     <string name="custom_url_scheme">com.mittendrinua.homecake</string>
+    <string name="server_client_id">236979354452-dlt4329gv7vmtba8f6jvvubd1f4ud41m.apps.googleusercontent.com</string>
 </resources>

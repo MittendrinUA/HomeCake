@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Edit2, Trash2, Plus, Minus, Save, X, Camera, Calculator, CheckCircle, FileText, ChevronRight } from 'lucide-react'; 
+import { useTranslation } from 'react-i18next';
 
 export default function RecipeDetail({ item, type, inventory, preps, costFn, onUpdate, onDelete, onCook, askConfirm, askPrompt, allCategories, compressImage }) {
+  const { t } = useTranslation();
   const [isAddingTo, setIsAddingTo] = useState(false); 
   const [newIngFullId, setNewIngFullId] = useState(''); 
   const [newIngAmount, setNewIngAmount] = useState(''); 
@@ -22,9 +24,9 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
     const arr = isBase ? item.ingredients : item.fillings.find(f=>f.id===tId).ingredients; 
     const oAmt = arr[oIdx].amount; const oGr = arr[oIdx].group || '';
     
-    askPrompt("Редагувати інгредієнт", [
-      { name: 'amt', label: 'Кількість', type: 'number', defaultValue: oAmt },
-      { name: 'grp', label: 'Група (необов\'язково)', defaultValue: oGr }
+    askPrompt(t('recipeDetail.editIngredient') || "Редагувати інгредієнт", [
+      { name: 'amt', label: t('recipeDetail.quantity') || 'Кількість', type: 'number', defaultValue: oAmt },
+      { name: 'grp', label: t('recipeDetail.groupOptional') || 'Група (необов\'язково)', defaultValue: oGr }
     ], (res) => {
        if (res.amt) {
          if(isBase) { 
@@ -38,7 +40,7 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
     });
   };
   
-  const handleDelIngredientLocal = (tId, oIdx) => askConfirm("Видалити", "Видалити інгредієнт?", () => { 
+  const handleDelIngredientLocal = (tId, oIdx) => askConfirm(t('common.delete') || "Видалити", t('recipeDetail.deleteIngredientConfirm') || "Видалити інгредієнт?", () => { 
     if (tId === 'base') handleUpdateField('ingredients', item.ingredients.filter((_, i) => i !== oIdx)); 
     else handleUpdateField('fillings', item.fillings.map(f => f.id === tId ? {...f, ingredients: f.ingredients.filter((_, i) => i !== oIdx)} : f)); 
   });
@@ -51,7 +53,7 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
         const img = await compressImage(f); 
         handleUpdateField('imageUrl', img);
       } catch (err) {
-        console.error("Помилка стиснення:", err);
+        console.error(t('recipeDetail.compressError') || "Помилка стиснення:", err);
       }
     } 
   }
@@ -78,7 +80,7 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
   }
   
   const renderIngList = (ings, tId) => {
-    if (!ings || ings.length === 0) return <p className="text-[#8C7A7A] text-center py-4 text-xs font-medium border border-dashed border-[#2A2323] rounded-2xl mt-4">Порожньо</p>;
+    if (!ings || ings.length === 0) return <p className="text-[#8C7A7A] text-center py-4 text-xs font-medium border border-dashed border-[#2A2323] rounded-2xl mt-4">{t('recipeDetail.empty') || "Порожньо"}</p>;
     
     const grouped = ings.map((ing, idx) => ({ ...ing, oIdx: idx })).reduce((acc, ing) => { 
       const g = ing.group || ''; if (!acc[g]) acc[g] = []; acc[g].push(ing); return acc; 
@@ -136,13 +138,13 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
             <div className="flex justify-between items-end">
                <div>
                  {type === 'recipes' && (
-                    <span onClick={() => askPrompt("Змінити папку", [{name: 'val', label: 'Оберіть колекцію', type: 'select', options: allCategories, defaultValue: item.category}], (res) => { if(res.val) handleUpdateField('category', res.val) })} className="text-[#D4AF37] bg-[#D4AF37]/20 backdrop-blur-md px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest mb-2 inline-block border border-[#D4AF37]/30 cursor-pointer">
-                      {item.category || 'Інше'} <Edit2 size={10} className="inline ml-1"/>
+                    <span onClick={() => askPrompt(t('recipeDetail.changeFolder') || "Змінити папку", [{name: 'val', label: t('recipeDetail.chooseCollection') || 'Оберіть колекцію', type: 'select', options: allCategories, defaultValue: item.category}], (res) => { if(res.val) handleUpdateField('category', res.val) })} className="text-[#D4AF37] bg-[#D4AF37]/20 backdrop-blur-md px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest mb-2 inline-block border border-[#D4AF37]/30 cursor-pointer">
+                      {item.category || t('recipeDetail.other') || 'Інше'} <Edit2 size={10} className="inline ml-1"/>
                     </span>
                  )}
                  <h2 className="text-3xl font-black text-[#F4EFEA] leading-tight drop-shadow-lg">
                     {item.name} 
-                    <Edit2 size={16} onClick={() => askPrompt("Назва", [{name: 'val', label: 'Назва десерту', defaultValue: item.name}], (res) => { if(res.val) handleUpdateField('name', res.val) })} className="inline text-[#8C7A7A] cursor-pointer ml-2 mb-1"/>
+                    <Edit2 size={16} onClick={() => askPrompt(t('common.name') || "Назва", [{name: 'val', label: t('recipeDetail.dessertName') || 'Назва десерту', defaultValue: item.name}], (res) => { if(res.val) handleUpdateField('name', res.val) })} className="inline text-[#8C7A7A] cursor-pointer ml-2 mb-1"/>
                  </h2>
                </div>
                <button onClick={onDelete} className="text-[#8C7A7A] hover:text-red-400 p-2 bg-[#151212]/80 backdrop-blur-md rounded-xl border border-[#2A2323]"><Trash2 size={18} /></button>
@@ -151,10 +153,10 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
       </div>
 
       <div className="px-6 py-5 bg-[#1E1919] border-b border-[#2A2323] mb-6 flex justify-between items-center shadow-lg shadow-black/20">
-         <div><p className="text-[#8C7A7A] text-[10px] font-bold mb-1 uppercase tracking-widest">Собівартість {type === 'preps' ? 'партії' : 'основи'}</p><p className="text-3xl font-black text-[#D4AF37] tracking-tight">{bc.toFixed(2)} ₴</p></div>
+         <div><p className="text-[#8C7A7A] text-[10px] font-bold mb-1 uppercase tracking-widest">{t('recipeDetail.costLabel') || 'Собівартість'} {type === 'preps' ? (t('recipeDetail.batch') || 'партії') : (t('recipeDetail.base') || 'основи')}</p><p className="text-3xl font-black text-[#D4AF37] tracking-tight">{bc.toFixed(2)} ₴</p></div>
          <div className="text-right">
-            <span className="text-[#8C7A7A] text-[10px] font-bold uppercase tracking-widest block mb-1">Вихід</span>
-            <strong className="text-[#F4EFEA] bg-[#151212] border border-[#2A2323] px-3 py-1.5 rounded-xl cursor-pointer inline-block" onClick={() => askPrompt("Вихід", [{name: 'val', label: `Кількість (${item.unit})`, type: 'number', defaultValue: item.baseYield}], (res) => { if(res.val) handleUpdateField('baseYield', Number(res.val)) })}>
+            <span className="text-[#8C7A7A] text-[10px] font-bold uppercase tracking-widest block mb-1">{t('recipeDetail.yield') || 'Вихід'}</span>
+            <strong className="text-[#F4EFEA] bg-[#151212] border border-[#2A2323] px-3 py-1.5 rounded-xl cursor-pointer inline-block" onClick={() => askPrompt(t('recipeDetail.yield') || "Вихід", [{name: 'val', label: `${t('recipeDetail.quantity') || 'Кількість'} (${item.unit})`, type: 'number', defaultValue: item.baseYield}], (res) => { if(res.val) handleUpdateField('baseYield', Number(res.val)) })}>
                {item.baseYield || 1} {item.unit || 'шт'}
             </strong>
          </div>
@@ -164,18 +166,18 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
         <div className="mx-4 mb-6">
            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest block mb-2 px-2">Прайс (за {item.baseYield||1}{item.unit||'шт'})</label>
+                <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest block mb-2 px-2">{t('recipeDetail.priceFor') || 'Прайс (за'} {item.baseYield||1}{item.unit||'шт'})</label>
                 <div className="flex items-center bg-[#151212] border border-[#2A2323] rounded-2xl p-4">
                   <input type="number" inputMode="decimal" value={item.defaultPrice || ''} placeholder="0" onChange={(e) => onUpdate({defaultPrice: parseFloat(e.target.value) || 0})} className="bg-transparent text-[#D4AF37] text-xl font-bold w-full outline-none"/>
                   <span className="text-[#8C7A7A] font-bold text-sm">₴</span>
                 </div>
               </div>
               <div>
-                <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest block mb-2 px-2">Мін. замовлення</label>
+                <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest block mb-2 px-2">{t('recipeDetail.minOrder') || 'Мін. замовлення'}</label>
                 <div className="flex items-center bg-[#151212] border border-[#2A2323] rounded-2xl p-4 relative">
                   <input type="number" inputMode="decimal" value={item.minOrder || ''} placeholder="1" onChange={(e) => onUpdate({minOrder: parseFloat(e.target.value) || 1})} className="bg-transparent text-[#F4EFEA] text-xl font-bold w-full outline-none pr-8"/>
                   
-                  <span onClick={() => askPrompt("Одиниця виміру", [{name: 'val', label: 'Одиниця (шт, кг, г, мл)', defaultValue: item.unit || 'шт'}], (res) => { if(res.val) onUpdate({unit: res.val.toLowerCase()}) })} className="absolute right-3 text-[#D4AF37] font-bold text-[10px] bg-[#D4AF37]/10 px-2 py-1.5 rounded-lg border border-[#D4AF37]/30 cursor-pointer active:scale-95 whitespace-nowrap uppercase tracking-widest">
+                  <span onClick={() => askPrompt(t('recipeDetail.unit') || "Одиниця виміру", [{name: 'val', label: t('recipeDetail.unitOptions') || 'Одиниця (шт, кг, г, мл)', defaultValue: item.unit || 'шт'}], (res) => { if(res.val) onUpdate({unit: res.val.toLowerCase()}) })} className="absolute right-3 text-[#D4AF37] font-bold text-[10px] bg-[#D4AF37]/10 px-2 py-1.5 rounded-lg border border-[#D4AF37]/30 cursor-pointer active:scale-95 whitespace-nowrap uppercase tracking-widest">
                     {item.unit || 'шт'} <Edit2 size={10} className="inline ml-1"/>
                   </span>
                 </div>
@@ -186,10 +188,10 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
       
       {type === 'preps' && (
         <div className="mx-4 mb-6 bg-[#D4AF37]/5 border border-[#D4AF37]/20 p-5 rounded-2xl">
-          <label className="text-[#D4AF37] text-[10px] uppercase font-bold tracking-widest mb-3 block">Зробити партію на склад</label>
+          <label className="text-[#D4AF37] text-[10px] uppercase font-bold tracking-widest mb-3 block">{t('recipeDetail.makeBatch') || 'Зробити партію на склад'}</label>
           <div className="flex gap-3">
-            <input type="number" inputMode="decimal" placeholder={`Вихід (${item.unit || 'г'})`} value={yieldAmount} onChange={e=>setYieldAmount(e.target.value)} className="w-2/3 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-4 rounded-xl outline-none font-bold text-lg focus:border-[#D4AF37]"/>
-            <button onClick={() => onCook(item, Number(yieldAmount))} disabled={!yieldAmount || bc === 0} className="w-1/3 bg-[#D4AF37] text-[#151212] disabled:opacity-50 font-black rounded-xl active:scale-95 uppercase tracking-widest text-xs">Готово</button>
+            <input type="number" inputMode="decimal" placeholder={`${t('recipeDetail.yield') || 'Вихід'} (${item.unit || 'г'})`} value={yieldAmount} onChange={e=>setYieldAmount(e.target.value)} className="w-2/3 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] p-4 rounded-xl outline-none font-bold text-lg focus:border-[#D4AF37]"/>
+            <button onClick={() => onCook(item, Number(yieldAmount))} disabled={!yieldAmount || bc === 0} className="w-1/3 bg-[#D4AF37] text-[#151212] disabled:opacity-50 font-black rounded-xl active:scale-95 uppercase tracking-widest text-xs">{t('common.done') || 'Готово'}</button>
           </div>
         </div>
       )}
@@ -198,14 +200,14 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
          <div className="absolute -right-4 -top-4 opacity-5 text-[#D4AF37]"><Calculator size={100} /></div>
          <div className="flex items-center gap-2 mb-3">
             <Calculator size={16} className="text-[#D4AF37]" />
-            <h3 className="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest">Калькулятор інгредієнтів</h3>
+            <h3 className="text-[#D4AF37] font-bold text-[10px] uppercase tracking-widest">{t('recipeDetail.calculator') || 'Калькулятор інгредієнтів'}</h3>
          </div>
-         <p className="text-[#8C7A7A] text-xs font-medium mb-4 pr-8">Скільки <strong className="text-[#F4EFEA]">{item.unit}</strong> потрібно приготувати зараз?</p>
+         <p className="text-[#8C7A7A] text-xs font-medium mb-4 pr-8">{t('recipeDetail.howMuchToPrepare') || 'Скільки потрібно приготувати зараз?'} <strong className="text-[#F4EFEA]">{item.unit}</strong></p>
          <div className="flex items-center gap-3">
             <input type="number" inputMode="decimal" value={targetYield} onChange={(e) => setTargetYield(Number(e.target.value) || '')} className="bg-[#151212] border border-[#2A2323] text-[#F4EFEA] rounded-xl p-3 w-24 text-center font-black text-xl outline-none focus:border-[#D4AF37] transition-colors shadow-inner" />
             <span className="text-[#8C7A7A] font-bold text-sm">{item.unit}</span>
          </div>
-         {sf !== 1 && <p className="text-[#5B7A5A] text-[10px] mt-4 font-bold bg-[#5B7A5A]/10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#5B7A5A]/20 uppercase tracking-widest"><CheckCircle size={12}/> Грами перераховано!</p>}
+         {sf !== 1 && <p className="text-[#5B7A5A] text-[10px] mt-4 font-bold bg-[#5B7A5A]/10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#5B7A5A]/20 uppercase tracking-widest"><CheckCircle size={12}/> {t('recipeDetail.gramsRecalculated') || 'Грами перераховано!'}</p>}
       </div>
 
       <div className="mx-4 mb-8">
@@ -213,13 +215,13 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
           <button onClick={() => toggleInst('base')} className="flex items-center justify-between w-full bg-[#1E1919] border border-[#2A2323] p-4 rounded-2xl active:scale-95 transition-all shadow-sm">
             <div className="flex items-center gap-2">
               <FileText size={18} className={showInst['base'] ? "text-[#D4AF37]" : "text-[#8C7A7A]"}/>
-              <span className={`font-bold tracking-wide text-sm ${showInst['base'] ? "text-[#F4EFEA]" : "text-[#8C7A7A]"}`}>Технологія приготування</span>
+              <span className={`font-bold tracking-wide text-sm ${showInst['base'] ? "text-[#F4EFEA]" : "text-[#8C7A7A]"}`}>{t('recipeDetail.technology') || 'Технологія приготування'}</span>
             </div>
-            <ChevronRight size={18} className={`text-[#8C7A7A] transition-transform duration-300 ${showInst['base'] ? 'rotate-90' : ''}`} />
+            <ChevronRight size={18} className={`text-[#8C7A7A] transition-transform duration-150 ${showInst['base'] ? 'rotate-90' : ''}`} />
           </button>
           
           {showInst['base'] && (
-            <div className="mt-3 animate-in slide-in-from-top-2 fade-in duration-200">
+            <div className="mt-3 animate-in slide-in-from-top-2 fade-in duration-100">
               {item.instructions ? (
                 <div className="bg-[#1E1919] p-5 rounded-[24px] border border-[#2A2323] text-[#F4EFEA] text-sm leading-relaxed whitespace-pre-wrap shadow-lg relative">
                    <button onClick={() => setInstModal({id: 'base', text: item.instructions || ''})} className="absolute top-4 right-4 text-[#D4AF37] bg-[#D4AF37]/10 p-2 rounded-xl active:scale-95"><Edit2 size={16}/></button>
@@ -227,7 +229,7 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
                 </div>
               ) : (
                 <div onClick={() => setInstModal({id: 'base', text: ''})} className="bg-[#1E1919] p-5 rounded-3xl border border-dashed border-[#2A2323] text-center text-[#8C7A7A] cursor-pointer active:scale-95 transition-all text-sm">
-                   + Додати опис процесу
+                   {t('recipeDetail.addProcess') || '+ Додати опис процесу'}
                 </div>
               )}
             </div>
@@ -235,21 +237,21 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
         </div>
         
         <div className="flex justify-between items-center mb-3">
-          <p className="text-[#8C7A7A] text-[10px] font-bold uppercase tracking-widest pl-1">Склад {type==='preps'?'заготівлі':'основи'}</p>
-          <button onClick={() => setIsAddingTo('base')} className="text-[#D4AF37] text-[10px] font-bold uppercase bg-[#D4AF37]/10 px-3 py-1.5 rounded-lg">+ Інгр.</button>
+          <p className="text-[#8C7A7A] text-[10px] font-bold uppercase tracking-widest pl-1">{type==='preps' ? t('recipeDetail.compositionPrep') : t('recipeDetail.compositionBase')}</p>
+          <button onClick={() => setIsAddingTo('base')} className="text-[#D4AF37] text-[10px] font-bold uppercase bg-[#D4AF37]/10 px-3 py-1.5 rounded-lg">{t('recipeDetail.addIngr') || '+ Інгр.'}</button>
         </div>
         
         {isAddingTo === 'base' && (
           <div className="bg-[#1E1919] border border-[#2A2323] p-4 rounded-2xl mb-4">
             <select className="w-full bg-[#151212] text-[#F4EFEA] border border-[#2A2323] p-3 rounded-xl mb-3 outline-none" value={newIngFullId} onChange={e=>setNewIngFullId(e.target.value)}>
-              <option value="">Оберіть компонент...</option>
-              <optgroup label="📦 Сировина та мікси на складі">
+              <option value="">{t('recipeDetail.chooseComponent') || 'Оберіть компонент...'}</option>
+              <optgroup label={t('recipeDetail.rawMaterial') || "📦 Сировина та мікси на складі"}>
                 {[...inventory].filter(i=>!i.isPrep).sort((a,b)=>a.name.localeCompare(b.name)).map(i=><option key={`inv_${i.id}`} value={`inv_${i.id}`}>{i.name}</option>)}
               </optgroup>
-              <optgroup label="📝 Тех. картки (Динамічні заготівлі)">
+              <optgroup label={t('recipeDetail.techCards') || "📝 Тех. картки (Динамічні заготівлі)"}>
                 {[...preps].filter(p => p.id !== item.id).sort((a,b)=>a.name.localeCompare(b.name)).map(p=><option key={`prep_${p.id}`} value={`prep_${p.id}`}>[ТК] {p.name}</option>)}
               </optgroup>
-              <optgroup label="🟣 Готові партії (Зі складу)">
+              <optgroup label={t('recipeDetail.readyBatches') || "🟣 Готові партії (Зі складу)"}>
                 {[...inventory].filter(i=>i.isPrep).sort((a,b)=>a.name.localeCompare(b.name)).map(i=><option key={`inv_${i.id}`} value={`inv_${i.id}`}>{i.name}</option>)}
               </optgroup>
             </select>
@@ -265,8 +267,8 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
                   const newObj = isPrepL ? { prepId: actualId, amount: Number(newIngAmount), group: newIngGroup } : { invId: actualId, amount: Number(newIngAmount), group: newIngGroup };
                   handleUpdateField('ingredients', [...(item.ingredients||[]), newObj]); setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');
                 }
-              }} className="flex-1 bg-[#D4AF37] text-[#151212] font-bold py-3 rounded-xl">ОК</button>
-              <button onClick={()=>{setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');}} className="flex-1 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] py-3 rounded-xl font-bold">Відміна</button>
+              }} className="flex-1 bg-[#D4AF37] text-[#151212] font-bold py-3 rounded-xl">{t('common.done') || 'ОК'}</button>
+              <button onClick={()=>{setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');}} className="flex-1 bg-[#151212] border border-[#2A2323] text-[#F4EFEA] py-3 rounded-xl font-bold">{t('recipeDetail.cancel') || 'Відміна'}</button>
             </div>
           </div>
         )}
@@ -277,8 +279,8 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
       {type === 'recipes' && (
         <div className="px-4 border-t border-[#2A2323] pt-8 mb-10">
           <div className="flex justify-between items-center mb-6">
-            <p className="text-[#8C7A7A] text-xs font-bold uppercase tracking-widest pl-1">Начинки</p>
-            <button onClick={() => askPrompt("Нова начинка", [{name: 'val', label: 'Назва начинки', placeholder: 'Напр: Вишневе конфі'}], (res) => { if(res.val) handleUpdateField('fillings', [...(item.fillings || []), { id: Date.now().toString(), name: res.val, ingredients: [], instructions: '' }]); })} className="text-[#F4EFEA] text-[10px] font-bold uppercase bg-[#1E1919] border border-[#2A2323] px-3 py-1.5 rounded-lg active:scale-95">+ Начинка</button>
+            <p className="text-[#8C7A7A] text-xs font-bold uppercase tracking-widest pl-1">{t('recipeDetail.fillings') || 'Начинки'}</p>
+            <button onClick={() => askPrompt(t('recipeDetail.newFilling') || "Нова начинка", [{name: 'val', label: t('recipeDetail.fillingName') || 'Назва начинки', placeholder: t('recipeDetail.fillingExample') || 'Напр: Вишневе конфі'}], (res) => { if(res.val) handleUpdateField('fillings', [...(item.fillings || []), { id: Date.now().toString(), name: res.val, ingredients: [], instructions: '' }]); })} className="text-[#F4EFEA] text-[10px] font-bold uppercase bg-[#1E1919] border border-[#2A2323] px-3 py-1.5 rounded-lg active:scale-95">{t('recipeDetail.addFilling') || '+ Начинка'}</button>
           </div>
           
           {(item.fillings || []).map(fil => { 
@@ -286,20 +288,20 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
             return (
               <div key={fil.id} className="bg-[#1E1919] border border-[#2A2323] rounded-[32px] p-6 mb-6 shadow-lg relative">
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="text-[#F4EFEA] font-bold text-xl pr-4 leading-tight">{fil.name} <Edit2 size={12} className="inline text-[#8C7A7A] ml-1 cursor-pointer" onClick={() => askPrompt("Назва", [{name: 'val', label: 'Назва начинки', defaultValue: fil.name}], (res) => { if(res.val) handleUpdateField('fillings', item.fillings.map(f=>f.id===fil.id?{...f,name:res.val}:f)) })}/></h4>
-                  <button onClick={() => askConfirm("Видалити начинку?", "", () => handleUpdateField('fillings', item.fillings.filter(f => f.id !== fil.id)))} className="text-[#8C7A7A] hover:text-red-400 bg-[#151212] p-2 rounded-xl border border-[#2A2323]"><Trash2 size={16}/></button>
+                  <h4 className="text-[#F4EFEA] font-bold text-xl pr-4 leading-tight">{fil.name} <Edit2 size={12} className="inline text-[#8C7A7A] ml-1 cursor-pointer" onClick={() => askPrompt(t('common.name') || "Назва", [{name: 'val', label: t('recipeDetail.fillingName') || 'Назва начинки', defaultValue: fil.name}], (res) => { if(res.val) handleUpdateField('fillings', item.fillings.map(f=>f.id===fil.id?{...f,name:res.val}:f)) })}/></h4>
+                  <button onClick={() => askConfirm(t('recipeDetail.deleteFillingConfirm') || "Видалити начинку?", "", () => handleUpdateField('fillings', item.fillings.filter(f => f.id !== fil.id)))} className="text-[#8C7A7A] hover:text-red-400 bg-[#151212] p-2 rounded-xl border border-[#2A2323]"><Trash2 size={16}/></button>
                 </div>
-                <p className="text-[#8C7A7A] text-[10px] font-bold uppercase tracking-widest mb-5">Собівартість: <span className="text-[#D4AF37] font-black text-sm">+{fC.toFixed(2)} ₴</span></p>
+                <p className="text-[#8C7A7A] text-[10px] font-bold uppercase tracking-widest mb-5">{t('recipeDetail.costLabel') || 'Собівартість'}: <span className="text-[#D4AF37] font-black text-sm">+{fC.toFixed(2)} ₴</span></p>
                 <div className="mb-6">
                   <button onClick={() => toggleInst(fil.id)} className="flex items-center justify-between w-full bg-[#151212] border border-[#2A2323] p-3.5 rounded-xl active:scale-95 transition-all shadow-sm">
                     <div className="flex items-center gap-2">
                       <FileText size={16} className={showInst[fil.id] ? "text-[#D4AF37]" : "text-[#8C7A7A]"}/>
-                      <span className={`font-medium text-sm ${showInst[fil.id] ? "text-[#F4EFEA]" : "text-[#8C7A7A]"}`}>Як готувати начинку</span>
+                      <span className={`font-medium text-sm ${showInst[fil.id] ? "text-[#F4EFEA]" : "text-[#8C7A7A]"}`}>{t('recipeDetail.howToCookFilling') || 'Як готувати начинку'}</span>
                     </div>
-                    <ChevronRight size={16} className={`text-[#8C7A7A] transition-transform duration-300 ${showInst[fil.id] ? 'rotate-90' : ''}`} />
+                    <ChevronRight size={16} className={`text-[#8C7A7A] transition-transform duration-150 ${showInst[fil.id] ? 'rotate-90' : ''}`} />
                   </button>
                   {showInst[fil.id] && (
-                    <div className="mt-3 animate-in slide-in-from-top-2 fade-in duration-200">
+                    <div className="mt-3 animate-in slide-in-from-top-2 fade-in duration-100">
                       {fil.instructions ? (
                         <div className="bg-[#151212] p-5 rounded-[24px] border border-[#2A2323] text-[#F4EFEA] text-sm leading-relaxed whitespace-pre-wrap relative">
                            <button onClick={() => setInstModal({id: fil.id, text: fil.instructions || ''})} className="absolute top-4 right-4 text-[#D4AF37] bg-[#D4AF37]/10 p-2 rounded-xl active:scale-95"><Edit2 size={16}/></button>
@@ -307,27 +309,27 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
                         </div>
                       ) : (
                         <div onClick={() => setInstModal({id: fil.id, text: ''})} className="bg-[#151212] p-4 rounded-2xl border border-dashed border-[#2A2323] text-center text-[#8C7A7A] cursor-pointer active:scale-95 transition-all text-xs">
-                           + Додати процес начинки
+                           {t('recipeDetail.addFillingProcess') || '+ Додати процес начинки'}
                         </div>
                       )}
                     </div>
                   )}
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <p className="text-[#8C7A7A] text-[10px] font-bold uppercase tracking-widest pl-1">Склад начинки</p>
-                  <button onClick={() => setIsAddingTo(fil.id)} className="text-[#D4AF37] text-[10px] font-bold uppercase bg-[#D4AF37]/10 px-2 py-1 rounded-lg">+ Інгр.</button>
+                  <p className="text-[#8C7A7A] text-[10px] font-bold uppercase tracking-widest pl-1">{t('recipeDetail.fillingComposition') || 'Склад начинки'}</p>
+                  <button onClick={() => setIsAddingTo(fil.id)} className="text-[#D4AF37] text-[10px] font-bold uppercase bg-[#D4AF37]/10 px-2 py-1 rounded-lg">{t('recipeDetail.addIngr') || '+ Інгр.'}</button>
                 </div>
                 {isAddingTo === fil.id && (
                   <div className="bg-[#151212] border border-[#2A2323] p-4 rounded-2xl mb-4">
                     <select className="w-full bg-[#1E1919] text-[#F4EFEA] border border-[#2A2323] p-3 rounded-xl mb-3 outline-none" value={newIngFullId} onChange={e=>setNewIngFullId(e.target.value)}>
-                      <option value="">Оберіть компонент...</option>
-                      <optgroup label="📦 Сировина та мікси на складі">
+                      <option value="">{t('recipeDetail.chooseComponent') || 'Оберіть компонент...'}</option>
+                      <optgroup label={t('recipeDetail.rawMaterial') || "📦 Сировина та мікси на складі"}>
                         {[...inventory].filter(i=>!i.isPrep).sort((a,b)=>a.name.localeCompare(b.name)).map(i=><option key={`inv_${i.id}`} value={`inv_${i.id}`}>{i.name}</option>)}
                       </optgroup>
-                      <optgroup label="📝 Тех. картки (Динамічні заготівлі)">
+                      <optgroup label={t('recipeDetail.techCards') || "📝 Тех. картки (Динамічні заготівлі)"}>
                         {[...preps].filter(p => p.id !== item.id).sort((a,b)=>a.name.localeCompare(b.name)).map(p=><option key={`prep_${p.id}`} value={`prep_${p.id}`}>[ТК] {p.name}</option>)}
                       </optgroup>
-                      <optgroup label="🟣 Готові партії (Зі складу)">
+                      <optgroup label={t('recipeDetail.readyBatches') || "🟣 Готові партії (Зі складу)"}>
                         {[...inventory].filter(i=>i.isPrep).sort((a,b)=>a.name.localeCompare(b.name)).map(i=><option key={`inv_${i.id}`} value={`inv_${i.id}`}>{i.name}</option>)}
                       </optgroup>
                     </select>
@@ -343,8 +345,8 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
                           const newObj = isPrepL ? { prepId: actualId, amount: Number(newIngAmount), group: newIngGroup } : { invId: actualId, amount: Number(newIngAmount), group: newIngGroup };
                           handleUpdateField('fillings', item.fillings.map(f=>f.id===fil.id?{...f, ingredients:[...f.ingredients, newObj]}:f)); setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');
                         }
-                      }} className="flex-1 bg-[#D4AF37] text-[#151212] font-bold py-2 rounded-xl">ОК</button>
-                      <button onClick={()=>{setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');}} className="flex-1 bg-[#1E1919] border border-[#2A2323] text-[#F4EFEA] py-2 rounded-xl">Відміна</button>
+                      }} className="flex-1 bg-[#D4AF37] text-[#151212] font-bold py-2 rounded-xl">{t('common.done') || 'ОК'}</button>
+                      <button onClick={()=>{setIsAddingTo(false); setNewIngFullId(''); setNewIngAmount('');}} className="flex-1 bg-[#1E1919] border border-[#2A2323] text-[#F4EFEA] py-2 rounded-xl">{t('recipeDetail.cancel') || 'Відміна'}</button>
                     </div>
                   </div>
                 )}
@@ -359,15 +361,15 @@ export default function RecipeDetail({ item, type, inventory, preps, costFn, onU
         <div className="fixed inset-0 z-[150] flex justify-center sm:items-center sm:py-8 bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-[420px] bg-[#151212] h-full sm:h-[850px] sm:rounded-[48px] sm:border-[8px] border-[#2A2323] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8">
             <div className="flex items-center justify-between px-4 py-4 bg-[#1E1919] border-b border-[#2A2323]">
-               <button onClick={() => setInstModal(null)} className="text-[#8C7A7A] hover:text-[#F4EFEA] font-bold px-2 py-1 transition-colors">Скасувати</button>
-               <h3 className="text-[#F4EFEA] font-bold tracking-widest uppercase text-xs">Процес</h3>
-               <button onClick={handleSaveInstModal} className="bg-[#D4AF37] text-[#151212] px-5 py-2 rounded-xl font-bold active:scale-95 transition-transform shadow-lg shadow-[#D4AF37]/20">Зберегти</button>
+               <button onClick={() => setInstModal(null)} className="text-[#8C7A7A] hover:text-[#F4EFEA] font-bold px-2 py-1 transition-colors">{t('recipeDetail.cancel') || 'Скасувати'}</button>
+               <h3 className="text-[#F4EFEA] font-bold tracking-widest uppercase text-xs">{t('recipeDetail.process') || 'Процес'}</h3>
+               <button onClick={handleSaveInstModal} className="bg-[#D4AF37] text-[#151212] px-5 py-2 rounded-xl font-bold active:scale-95 transition-transform shadow-lg shadow-[#D4AF37]/20">{t('recipeDetail.save') || 'Зберегти'}</button>
             </div>
             <textarea 
                autoFocus
                value={instModal.text}
                onChange={e => setInstModal({...instModal, text: e.target.value})}
-               placeholder="Опишіть детально кроки приготування..."
+               placeholder={t('recipeDetail.describeSteps') || "Опишіть детально кроки приготування..."}
                className="flex-1 w-full bg-[#151212] text-[#F4EFEA] p-6 outline-none resize-none text-base leading-relaxed custom-scrollbar"
             />
           </div>

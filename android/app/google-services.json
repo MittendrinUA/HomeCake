@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "236979354452",
+    "project_id": "backery-bc0c9",
+    "storage_bucket": "backery-bc0c9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236979354452:android:727879be9f507315aca6c1",
+        "android_client_info": {
+          "package_name": "com.mittendrinua.homecake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236979354452-i2nq5ru7jlt6kue4q01nrq8ierc9vij9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mittendrinua.homecake",
+            "certificate_hash": "908253c89958f980122c5c7f823fcbb6d124e0dc"
+          }
+        },
+        {
+          "client_id": "236979354452-dlt4329gv7vmtba8f6jvvubd1f4ud41m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_SwoVCuCxoJfEWvPIjPIyhixcDz73t_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236979354452-dlt4329gv7vmtba8f6jvvubd1f4ud41m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236979354452:android:c217cd99ea18e948aca6c1",
+        "android_client_info": {
+          "package_name": "com.whisked.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236979354452-dlt4329gv7vmtba8f6jvvubd1f4ud41m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_SwoVCuCxoJfEWvPIjPIyhixcDz73t_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236979354452-dlt4329gv7vmtba8f6jvvubd1f4ud41m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
