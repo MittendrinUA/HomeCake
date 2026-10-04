@@ -16,6 +16,7 @@ import DrawerMenu from './components/layout/DrawerMenu';
 import TabBar from './components/layout/TabBar';
 import CustomPrompt from './components/ui/CustomPrompt';
 import Logo from './components/ui/Logo';
+import AnimatedLoadingLogo from './components/ui/AnimatedLoadingLogo';
 import List from './components/shared/List';
 import InventoryList from './components/inventory/InventoryList';
 import InventoryDetail from './components/inventory/InventoryDetail';
@@ -29,6 +30,7 @@ import AddOrderForm from './components/orders/AddOrderForm';
 import InvoicePreview from './components/invoice/InvoicePreview';
 import ShoppingListPreview from './components/invoice/ShoppingListPreview';
 import LanguageSelection from './components/LanguageSelection';
+import OnboardingGuide from './components/OnboardingGuide';
 
 // --- LAZY COMPONENTS ---
 const Analytics = lazy(() => import('./components/Analytics'));
@@ -41,7 +43,18 @@ const CustomerDetail = lazy(() => import('./components/CustomerDetail'));
 const Trash = lazy(() => import('./components/Trash'));
 const SettingsModal = lazy(() => import('./components/SettingsModal'));
 
+
+const SuspenseLoader = () => (
+  <div className="fixed inset-0 flex flex-col items-center justify-center pointer-events-none z-[100]">
+    <div className="relative w-16 h-16 flex items-center justify-center">
+      <div className="absolute inset-0 border-4 border-[#2A2323] rounded-full"></div>
+      <div className="absolute inset-0 border-4 border-[#D4AF37] rounded-full border-t-transparent animate-spin"></div>
+    </div>
+  </div>
+);
+
 export default function App() {
+
   useFirebaseData();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -53,7 +66,7 @@ export default function App() {
   } = useStore();
 
   // LOCAL UI STATE
-  const [activeTab, setActiveTab] = useState('sales');
+  const [activeTab, setActiveTab] = useState('recipes');
   const [selectedItem, setSelectedItem] = useState(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -75,6 +88,17 @@ export default function App() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallFeature, setPaywallFeature] = useState('');
   const [showSettings, setShowSettings] = useState(false);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.visualViewport) {
+        setIsKeyboardOpen(window.visualViewport.height < window.innerHeight - 150);
+      }
+    };
+    window.visualViewport?.addEventListener('resize', handleResize);
+    return () => window.visualViewport?.removeEventListener('resize', handleResize);
+  }, []);
 
   // UTILS
   const showToast = useCallback((msg) => {setToast(msg);setTimeout(() => setToast(''), 3000);}, []);
@@ -104,6 +128,22 @@ export default function App() {
     if (invoiceMode) {setInvoiceMode(false);setSelectedForInvoice([]);return;}
   }, [showInvoicePreview, showShoppingListPreview, editingOrder, isAddingNew, selectedItem, selectedCategory, activeTab, invoiceMode]);
 
+  useEffect(() => {
+    let backListener;
+    import('@capacitor/app').then(({ App: CapApp }) => {
+      backListener = CapApp.addListener('backButton', () => {
+        if (showInvoicePreview || showShoppingListPreview || editingOrder || isAddingNew || selectedItem || (selectedCategory && activeTab === 'recipes') || invoiceMode) {
+          handleBack();
+        } else {
+          CapApp.exitApp();
+        }
+      });
+    }).catch(() => {});
+    return () => {
+      if (backListener) backListener.then(l => l.remove());
+    };
+  }, [handleBack, showInvoicePreview, showShoppingListPreview, editingOrder, isAddingNew, selectedItem, selectedCategory, activeTab, invoiceMode]);
+
   // FILTERED ACTIVE DATA
   const activeRecipes = useMemo(() => recipes.filter((r) => !r.isDeleted), [recipes]);
   const activeCategories = useMemo(() => categories.filter((c) => !c.isDeleted), [categories]);
@@ -131,6 +171,7 @@ export default function App() {
       const { updateDoc } = await import('firebase/firestore');
       await updateDoc(doc(db, 'bakery', user.uid, colName, id), data);
       showToast('Оновлено!');
+      setSelectedItem((prev) => prev && prev.id === id ? { ...prev, ...data } : prev);
     } catch (error) {showToast('Помилка оновлення');}
   };
 
@@ -270,10 +311,10 @@ export default function App() {
 
   if (isInitialLoading) {
     return (
-      <div className="h-[100dvh] w-full bg-[#151212] flex flex-col items-center justify-center text-[#F4EFEA] font-sans">
-         <Logo size={48} className="mb-8" />
-         <div className="w-10 h-10 border-4 border-[#2A2323] border-t-[#E0BFB8] rounded-full animate-spin mb-4 shadow-lg"></div>
-         <p className="text-[#8C7A7A] mt-2 font-medium tracking-wide animate-pulse">{loadingStep || t('common.loading', 'Завантаження...')}</p>
+      <div className="h-full w-full bg-[#151212] flex flex-col items-center justify-center text-[#F4EFEA] font-sans">
+         <AnimatedLoadingLogo size={56} />
+
+
       </div>);
 
   }
@@ -283,12 +324,16 @@ export default function App() {
   }
 
   return (
-    <div className="h-[100dvh] w-full bg-black text-[#F4EFEA] font-sans overflow-hidden select-none relative">
+    <div className="h-full w-full bg-black text-[#F4EFEA] font-sans overflow-hidden select-none relative">
       {isLoading && !isInitialLoading &&
       <div className="absolute inset-0 bg-[#151212]/50 backdrop-blur-[2px] z-[500] flex flex-col items-center justify-center text-[#F4EFEA] font-sans animate-in fade-in duration-200">
-           <Logo size={40} className="mb-6 drop-shadow-lg" />
-           <div className="w-8 h-8 border-4 border-[#2A2323] border-t-[#E0BFB8] rounded-full animate-spin mb-4 shadow-lg"></div>
-           <p className="text-[#8C7A7A] mt-2 font-medium tracking-wide animate-pulse drop-shadow-md">{loadingStep || t('common.loading', 'Завантаження...')}</p>
+           <Logo size={40} />
+           <p className="text-[#8C7A7A] mt-4 text-sm font-bold flex items-center gap-2">
+             <span className="w-4 h-4 rounded-full border-2 border-[#D4AF37] border-t-transparent animate-spin"></span>
+             {loadingStep || t("auto.t_1", "Завантаження...")}
+           </p>
+
+
         </div>
       }
       {isMenuOpen && <DrawerMenu activeTab={activeTab} user={user} onNavigate={changeMainTab} onClose={() => setIsMenuOpen(false)} onShowPaywall={() => setShowPaywall(true)} onShowSettings={() => setShowSettings(true)} onShowLanguage={() => setShowLanguageModal(true)} showToast={showToast} />}
@@ -308,11 +353,9 @@ export default function App() {
           }} />
         
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative">
+        <div id="main-scroll-container" className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative">
           <div className="min-h-full">
-            <AnimatePresence mode="wait">
-              <motion.div key={activeTab + (selectedItem ? 'item' : '') + (isAddingNew ? 'new' : '') + (selectedCategory || '') + (showInvoicePreview ? 'inv' : '') + (showShoppingListPreview ? 'shop' : '')}
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.1 }} className="flex-1">
+            <div key={activeTab + (selectedItem ? 'item' : '') + (isAddingNew ? 'new' : '') + (selectedCategory || '') + (showInvoicePreview ? 'inv' : '') + (showShoppingListPreview ? 'shop' : '')} className="flex-1 animate-in fade-in duration-100 slide-in-from-bottom-2">
                 
                 {showInvoicePreview ?
                 <InvoicePreview sales={activeSales.filter((s) => selectedForInvoice.includes(s.id))} recipes={activeRecipes} /> :
@@ -327,12 +370,10 @@ export default function App() {
                     handleBack();
                   } catch (e) {showToast("Помилка");}setIsLoading(false);
                 }} customers={customers} initialData={editingOrder} /> :
-                activeTab === 'inventory' ? <AddInventoryForm onSave={async (d, f) => {
+                activeTab === 'inventory' ? <AddInventoryForm onSave={async (d) => {
                   setIsLoading(true);setLoadingStep("Збереження...");
                   try {
-                    let imgUrl = null;
-                    if (f) imgUrl = await compressImage(f);
-                    const nRef = await addDoc(collection(db, 'bakery', user.uid, 'inventory'), { ...d, imageUrl: imgUrl });
+                    const nRef = await addDoc(collection(db, 'bakery', user.uid, 'inventory'), { ...d });
                     await logInventoryMovement(nRef.id, d.name, 'IN', d.quantity, d.unit, d.price, 'Початкове внесення');
                     handleBack();showToast("Матеріал додано");
                   } catch (e) {showToast("Помилка");}
@@ -343,7 +384,7 @@ export default function App() {
                   try {await addDoc(collection(db, 'bakery', user.uid, 'customers'), { ...d, orderCount: 0, totalSpent: 0 });handleBack();showToast("Клієнта додано!");}
                   catch (e) {showToast("Помилка");}setIsLoading(false);
                 }} /> :
-                activeTab === 'recipes' ? <Suspense fallback={<div className="p-4">{t("auto.t_1", "Завантаження...")}</div>}><AddRecipeForm onSave={async (d, f) => {
+                activeTab === 'recipes' ? <Suspense fallback={<SuspenseLoader />}><AddRecipeForm onSave={async (d, f) => {
                     setIsLoading(true);setLoadingStep("Збереження...");
                     try {
                       let imgUrl = null;
@@ -359,10 +400,10 @@ export default function App() {
                   handleUpdateDoc('inventory', item.id, { quantity: newQty });
                   addDoc(collection(db, 'bakery', user.uid, 'waste'), { invId: item.id, name: item.name, amount: qty, cost: qty * item.price, date: new Date().toISOString() });
                   logInventoryMovement(item.id, item.name, 'WASTE', qty, item.unit, item.price, 'Списання в брак');
-                }} askConfirm={askConfirm} askPrompt={askPrompt} showToast={showToast} logs={inventoryLogs} logMovement={logInventoryMovement} compressImage={compressImage} /> :
-                activeTab === 'customers' ? <Suspense fallback={<div className="p-4">{t("auto.t_1", "Завантаження...")}</div>}><CustomerDetail item={selectedItem} onUpdate={(d) => handleUpdateDoc('customers', selectedItem.id, d)} onDelete={() => handleDeleteDoc('customers', selectedItem.id, "Перемістити клієнта у Кошик?")} askPrompt={askPrompt} sales={activeSales} /></Suspense> :
-                activeTab === 'recipes' ? <Suspense fallback={<div className="p-4">{t("auto.t_1", "Завантаження...")}</div>}><RecipeDetail item={selectedItem} type="recipes" inventory={activeInventory} preps={activePreps} costFn={(obj, fId) => calculateCost(obj, fId, activeInventory, activePreps)} compressImage={compressImage} onUpdate={(d) => handleUpdateDoc('recipes', selectedItem.id, d)} onDelete={() => handleDeleteDoc('recipes', selectedItem.id, "Перемістити рецепт у Кошик?")} askConfirm={askConfirm} askPrompt={askPrompt} allCategories={availableCategoriesList} /></Suspense> :
-                activeTab === 'preps' ? <Suspense fallback={<div className="p-4">{t("auto.t_1", "Завантаження...")}</div>}><RecipeDetail item={selectedItem} type="preps" inventory={activeInventory} preps={activePreps} costFn={(obj, fId) => calculateCost(obj, fId, activeInventory, activePreps)} compressImage={compressImage} onUpdate={(d) => handleUpdateDoc('preps', selectedItem.id, d)} onDelete={() => handleDeleteDoc('preps', selectedItem.id, "Перемістити заготівлю у Кошик?")} onCook={async (item, qty) => {
+                }} askConfirm={askConfirm} askPrompt={askPrompt} showToast={showToast} logs={inventoryLogs} logMovement={logInventoryMovement} /> :
+                activeTab === 'customers' ? <Suspense fallback={<SuspenseLoader />}><CustomerDetail item={selectedItem} onUpdate={(d) => handleUpdateDoc('customers', selectedItem.id, d)} onDelete={() => handleDeleteDoc('customers', selectedItem.id, "Перемістити клієнта у Кошик?")} askPrompt={askPrompt} sales={activeSales} /></Suspense> :
+                activeTab === 'recipes' ? <Suspense fallback={<SuspenseLoader />}><RecipeDetail item={selectedItem} type="recipes" inventory={activeInventory} preps={activePreps} costFn={(obj, fId) => calculateCost(obj, fId, activeInventory, activePreps)} compressImage={compressImage} onUpdate={(d) => handleUpdateDoc('recipes', selectedItem.id, d)} onDelete={() => handleDeleteDoc('recipes', selectedItem.id, "Перемістити рецепт у Кошик?")} askConfirm={askConfirm} askPrompt={askPrompt} allCategories={availableCategoriesList} /></Suspense> :
+                activeTab === 'preps' ? <Suspense fallback={<SuspenseLoader />}><RecipeDetail item={selectedItem} type="preps" inventory={activeInventory} preps={activePreps} costFn={(obj, fId) => calculateCost(obj, fId, activeInventory, activePreps)} compressImage={compressImage} onUpdate={(d) => handleUpdateDoc('preps', selectedItem.id, d)} onDelete={() => handleDeleteDoc('preps', selectedItem.id, "Перемістити заготівлю у Кошик?")} onCook={async (item, qty) => {
                     if (!qty || qty <= 0) return;
                     const newQty = (item.quantity || 0) + qty;
                     handleUpdateDoc('preps', item.id, { quantity: newQty });
@@ -394,7 +435,7 @@ export default function App() {
                         {inventoryMode === 'list' ?
                     <InventoryList inventory={activeInventory} onClick={setSelectedItem} /> :
 
-                    <Suspense fallback={<div className="p-4">{t("auto.t_1", "Завантаження...")}</div>}>
+                    <Suspense fallback={<SuspenseLoader />}>
                             <InventoryHistory historyLogs={inventoryLogs.map((log) => ({
                         id: log.id, itemName: log.invName,
                         type: log.type === 'IN' ? 'add' : log.type === 'WASTE' ? 'waste' : (log.reason || '').includes('Ревізія') ? 'edit' : 'usage',
@@ -404,23 +445,22 @@ export default function App() {
                     }
                       </div>
                   }
-                    {activeTab === 'analytics' && <Suspense fallback={<div className="p-4 text-center">{t("auto.t_1", "Завантаження...")}</div>}><Analytics sales={activeSales} recipes={activeRecipes} inventory={activeInventory} costFn={(r, f) => calculateCost(r, f, activeInventory, activePreps)} customers={activeCustomers} waste={waste} onCustomerClick={(custName) => {
+                    {activeTab === 'analytics' && <Suspense fallback={<SuspenseLoader />}><Analytics sales={activeSales} recipes={activeRecipes} inventory={activeInventory} costFn={(r, f) => calculateCost(r, f, activeInventory, activePreps)} customers={activeCustomers} waste={waste} onCustomerClick={(custName) => {
                       const foundCust = activeCustomers.find((c) => (c.name || '').toLowerCase().trim() === (custName || '').toLowerCase().trim());
                       if (foundCust) {navigate('/customers');setSelectedItem(foundCust);} else {showToast("Клієнта не знайдено");}
                     }} /></Suspense>}
-                    {activeTab === 'admin' && <Suspense fallback={<div className="p-4 text-center">{t("auto.t_1", "Завантаження...")}</div>}><AdminPanel onClose={() => changeMainTab('sales')} /></Suspense>}
-                    {activeTab === 'trash' && <Suspense fallback={<div className="p-4 text-center">{t("auto.t_1", "Завантаження...")}</div>}>
+                    {activeTab === 'admin' && <Suspense fallback={<SuspenseLoader />}><AdminPanel onClose={() => changeMainTab('sales')} /></Suspense>}
+                    {activeTab === 'trash' && <Suspense fallback={<SuspenseLoader />}>
                         <Trash recipes={recipes} categories={categories} inventory={inventory} preps={preps} sales={sales} customers={customers} onRestore={handleRestoreDoc} onPermanentDelete={handlePermanentDeleteDoc} onEmptyTrash={handleEmptyTrash} />
                     </Suspense>}
                   </div>
                 }
-              </motion.div>
-            </AnimatePresence>
+              </div>
           </div>
         </div>
 
         {/* BOTTOM ACTION BUTTONS FOR INVOICE MODE */}
-        {activeTab === 'sales' && invoiceMode && !showInvoicePreview && selectedForInvoice.length > 0 &&
+        {activeTab === 'sales' && invoiceMode && !showInvoicePreview && selectedForInvoice.length > 0 && !isKeyboardOpen &&
         <div className="absolute bottom-[90px] w-full px-4 z-20">
              <button onClick={() => setShowInvoicePreview(true)} className="w-full bg-[#D4AF37] text-[#151212] font-bold py-4 rounded-xl shadow-xl flex items-center justify-center gap-2 active:scale-95 outline-none focus:outline-none select-none" style={{ WebkitTapHighlightColor: 'transparent' }}>{t("auto.t_4", "Сформувати чек (")}
             {selectedForInvoice.length})
@@ -429,7 +469,7 @@ export default function App() {
         }
 
         {/* BOTTOM TAB BAR */}
-        {!selectedItem && !isAddingNew && !editingOrder && !showInvoicePreview && !showShoppingListPreview &&
+        {!selectedItem && !isAddingNew && !editingOrder && !showInvoicePreview && !showShoppingListPreview && !isKeyboardOpen &&
         <TabBar activeTab={activeTab} user={user} changeMainTab={changeMainTab} />
         }
         
@@ -462,6 +502,6 @@ export default function App() {
           </div>
         }
       </div>
+      <OnboardingGuide />
     </div>);
-
 }

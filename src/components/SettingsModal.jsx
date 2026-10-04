@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Globe, Bell, DollarSign, ChevronRight, Shield, AlertTriangle, Image as ImageIcon } from 'lucide-react';
+import { X, Globe, Bell, DollarSign, ChevronRight, Shield, AlertTriangle } from 'lucide-react';
 import useStore from '../store/useStore';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { deleteUser } from 'firebase/auth';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { Capacitor } from '@capacitor/core';
 
 export default function SettingsModal({ onClose }) {
   const { t, i18n } = useTranslation();
@@ -20,7 +20,6 @@ export default function SettingsModal({ onClose }) {
   
   const [orderReminder, setOrderReminder] = useState(settings?.notifications?.orderDeadlineDays || 1);
   const [expiryReminder, setExpiryReminder] = useState(settings?.notifications?.expiryAlertDays || 3);
-  const [showInventoryImages, setShowInventoryImages] = useState(settings?.showInventoryImages ?? true);
 
   const handleSave = async () => {
     i18n.changeLanguage(lang);
@@ -30,19 +29,16 @@ export default function SettingsModal({ onClose }) {
       ...settings,
       language: lang,
       currency: currency,
-      showInventoryImages: showInventoryImages,
       notifications: {
         orderDeadlineDays: orderReminder,
         expiryAlertDays: expiryReminder
       }
     });
 
-    if (Capacitor.isNativePlatform()) {
-       try {
-         await LocalNotifications.requestPermissions();
-       } catch(e) {
-         console.warn("Notifications permission denied or not supported", e);
-       }
+    try {
+      await LocalNotifications.requestPermissions();
+    } catch(e) {
+      console.warn("Notifications permission denied or not supported", e);
     }
 
     onClose();
@@ -52,6 +48,14 @@ export default function SettingsModal({ onClose }) {
     if (!user) return;
     if (window.confirm(t('settings.deleteAccountConfirm', "Ви впевнені, що хочете видалити акаунт і всі пов'язані дані? Ця дія незворотня."))) {
       try {
+        const collectionsToDelete = ['recipes', 'categories', 'inventory', 'sales', 'customers', 'preps', 'inventory_logs', 'waste'];
+        for (const colName of collectionsToDelete) {
+          const colRef = collection(db, 'bakery', user.uid, colName);
+          const snapshot = await getDocs(colRef);
+          const deletePromises = snapshot.docs.map(docSnap => deleteDoc(doc(db, 'bakery', user.uid, colName, docSnap.id)));
+          await Promise.all(deletePromises);
+        }
+
         await deleteUser(auth.currentUser);
         resetAllData();
         setUser(null);
@@ -156,22 +160,7 @@ export default function SettingsModal({ onClose }) {
                 </div>
               </div>
 
-              {/* Display */}
-              <div className="pt-2">
-                <div className="flex items-center gap-2 mb-4 text-[#8C7A7A]">
-                  <ImageIcon size={18} />
-                  <h3 className="font-bold text-sm uppercase tracking-widest">{t('settings.appearance', 'Зовнішній вигляд')}</h3>
-                </div>
-                <div className="bg-[#1E1919] border border-[#2A2323] p-5 rounded-2xl flex items-center justify-between">
-                  <span className="text-[#F4EFEA] font-bold text-sm">{t('settings.inventoryImages', 'Фотографії на складі')}</span>
-                  <button 
-                    onClick={() => setShowInventoryImages(!showInventoryImages)}
-                    className={`w-12 h-6 rounded-full p-1 transition-colors ${showInventoryImages ? 'bg-[#D4AF37]' : 'bg-[#2A2323]'}`}
-                  >
-                    <div className={`w-4 h-4 bg-white rounded-full transition-transform ${showInventoryImages ? 'translate-x-6' : 'translate-x-0'}`} />
-                  </button>
-                </div>
-              </div>
+              {/* Display settings removed */}
             </>
           )}
 
@@ -238,10 +227,11 @@ export default function SettingsModal({ onClose }) {
               </div>
               
               <div className="bg-[#1E1919] border border-[#2A2323] p-5 rounded-2xl flex flex-col gap-4">
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="flex items-center justify-between p-4 bg-[#151212] rounded-xl border border-[#2A2323] hover:border-[#8C7A7A] transition-colors">
+                <a href="https://whisked-app.web.app/privacy-policy.html" target="_blank" rel="noreferrer" className="flex items-center justify-between p-4 bg-[#151212] rounded-xl border border-[#2A2323] hover:border-[#8C7A7A] transition-colors">
                   <span className="text-[#F4EFEA] font-bold">{t('settings.privacyPolicy', 'Політика конфіденційності')}</span>
                   <Globe size={18} className="text-[#8C7A7A]" />
                 </a>
+
                 
                 {user && (
                   <button onClick={handleDeleteAccount} className="flex items-center justify-between p-4 bg-red-500/10 rounded-xl border border-red-500/30 hover:bg-red-500/20 transition-colors">

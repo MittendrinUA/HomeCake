@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { collection, doc, onSnapshot, setDoc, query, orderBy, limit } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import useStore from '../store/useStore';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +75,10 @@ export function useFirebaseData() {
     const u5 = onSnapshot(collection(db, 'bakery', uid, 'categories'),     s => { setCategories(map(s));   checkLoaded(); }, setErr);
     const u6 = onSnapshot(collection(db, 'bakery', uid, 'customers'),      s => { setCustomers(map(s));    checkLoaded(); }, setErr);
     const u7 = onSnapshot(collection(db, 'bakery', uid, 'waste'),          s => { setWaste(map(s));        checkLoaded(); }, setErr);
-    const u8 = onSnapshot(collection(db, 'bakery', uid, 'inventory_logs'), s => { setInventoryLogs(map(s)); checkLoaded(); }, setErr);
+    
+    // Обмежуємо історію складу останніми 200 записами, щоб не перевантажувати пам'ять
+    const logsQuery = query(collection(db, 'bakery', uid, 'inventory_logs'), orderBy('timestamp', 'desc'), limit(200));
+    const u8 = onSnapshot(logsQuery, s => { setInventoryLogs(map(s)); checkLoaded(); }, setErr);
 
     return () => { u1(); u2(); u3(); u4(); u5(); u6(); u7(); u8(); };
   }, [uid]);

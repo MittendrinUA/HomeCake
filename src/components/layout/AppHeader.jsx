@@ -32,8 +32,8 @@ const AppHeader = memo(function AppHeader({
           {activeTab === 'inventory' && (
             <button onClick={onShoppingList} className="text-[#D4AF37] p-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-xl"><ClipboardList size={20} /></button>
           )}
-          {!invoiceMode && (!selectedCategory && activeTab === 'recipes' ? null : (
-            <button onClick={onPlusClick} className="bg-[#D4AF37] text-[#151212] p-2 rounded-xl shadow-lg shadow-[#D4AF37]/20 active:scale-95"><Plus size={20} strokeWidth={2.5} /></button>
+          {!invoiceMode && activeTab !== 'trash' && (!selectedCategory && activeTab === 'recipes' ? null : (
+            <button id="global-add-btn" onClick={onPlusClick} className="bg-[#D4AF37] text-[#151212] p-2 rounded-xl shadow-lg shadow-[#D4AF37]/20 active:scale-95"><Plus size={20} strokeWidth={2.5} /></button>
           ))}
         </div>
       )}

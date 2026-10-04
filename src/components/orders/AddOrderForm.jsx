@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";import React, { useState, useEffect, memo } from 'react';
+import { useTranslation } from "react-i18next";import React, { useState, useEffect, memo, useMemo } from 'react';
 import { ShoppingCart, PackageOpen, Trash2, Users, Clock, AlertCircle, Send } from 'lucide-react';
 import CustomSelect from '../ui/CustomSelect';
 
@@ -18,6 +18,23 @@ const AddOrderForm = memo(function AddOrderForm({ recipes, inventory, preps, onS
   const [missingIngredients, setMissingIngredients] = useState([]);
 
   const selectedRecipe = recipes.find((r) => r.id === recipeId);
+  
+  const recipeOptions = useMemo(() => {
+    const opts = [{ value: '', label: 'Оберіть десерт...' }];
+    const grouped = {};
+    recipes.forEach(r => {
+      const cat = r.category || 'Без категорії';
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(r);
+    });
+    Object.keys(grouped).sort().forEach(cat => {
+      opts.push({ label: cat, isGroup: true });
+      grouped[cat].sort((a, b) => (a.name || '').localeCompare(b.name || '')).forEach(r => {
+        opts.push({ value: r.id, label: r.name });
+      });
+    });
+    return opts;
+  }, [recipes]);
 
   useEffect(() => {
     if (selectedRecipe) {
@@ -81,8 +98,8 @@ const AddOrderForm = memo(function AddOrderForm({ recipes, inventory, preps, onS
     <div className="flex flex-col h-full relative">
       <div className="flex-1 overflow-y-auto p-4 custom-scrollbar pb-10">
         <div className="flex bg-[#1E1919] border border-[#2A2323] rounded-[20px] p-1.5 mb-6 shadow-sm">
-          <button onClick={() => setStatus('planned')} className={`flex-1 py-3 text-xs uppercase tracking-widest font-bold rounded-xl transition-all ${status === 'planned' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A]'}`}>{t("auto.t_70", "На дату")}</button>
-          <button onClick={() => setStatus('completed')} className={`flex-1 py-3 text-xs uppercase tracking-widest font-bold rounded-xl transition-all ${status === 'completed' ? 'bg-[#151212] text-[#F4EFEA] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A]'}`}>{t("auto.t_71", "Видано")}</button>
+          <button style={{ WebkitTapHighlightColor: 'transparent' }} onClick={() => setStatus('planned')} className={`flex-1 py-3 text-xs uppercase tracking-widest font-bold rounded-xl outline-none transition-all ${status === 'planned' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A]'}`}>{t("auto.t_70", "На дату")}</button>
+          <button style={{ WebkitTapHighlightColor: 'transparent' }} onClick={() => setStatus('completed')} className={`flex-1 py-3 text-xs uppercase tracking-widest font-bold rounded-xl outline-none transition-all ${status === 'completed' ? 'bg-[#151212] text-[#F4EFEA] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A]'}`}>{t("auto.t_71", "Видано")}</button>
         </div>
         
         <div className="bg-[#1E1919] border border-[#2A2323] rounded-[32px] p-6 mb-5 shadow-lg shadow-black/20">
@@ -116,7 +133,8 @@ const AddOrderForm = memo(function AddOrderForm({ recipes, inventory, preps, onS
             <CustomSelect
               value={recipeId}
               onChange={setRecipeId}
-              options={[{ value: '', label: 'Оберіть десерт...' }, ...[...recipes].sort((a, b) => (a.name || '').localeCompare(b.name || '')).map((r) => ({ value: r.id, label: r.name }))]}
+              options={recipeOptions}
+              searchable={true}
               className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-xl mb-4 outline-none font-medium" />
             
             
@@ -140,10 +158,11 @@ const AddOrderForm = memo(function AddOrderForm({ recipes, inventory, preps, onS
         
         <div className="bg-[#1E1919] border border-[#2A2323] rounded-[32px] p-6 shadow-lg shadow-black/20 mb-6 relative">
           <label className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2 block">{t("auto.t_79", "Клієнт")}</label>
-          <input type="text" placeholder={t("auto.t_80", "Ім'я")} value={customer} onFocus={() => setShowCusts(true)} onBlur={() => setTimeout(() => setShowCusts(false), 200)} onChange={(e) => setCustomer(e.target.value)} className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-2xl mb-5 outline-none font-medium" />
+          <div className="relative mb-5">
+            <input type="text" placeholder={t("auto.t_80", "Ім'я")} value={customer} onFocus={() => setShowCusts(true)} onBlur={() => setTimeout(() => setShowCusts(false), 200)} onChange={(e) => setCustomer(e.target.value)} className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] p-4 rounded-2xl outline-none font-medium" />
           
           {showCusts && filteredCusts.length > 0 &&
-          <div className="absolute left-6 right-6 top-24 bg-[#151212] border border-[#D4AF37] rounded-xl z-30 shadow-2xl overflow-hidden">
+          <div className="absolute left-0 right-0 top-full mt-2 bg-[#151212] border border-[#D4AF37] rounded-xl z-30 shadow-2xl overflow-hidden">
               {filteredCusts.map((c) =>
             <div key={c.id} onClick={() => {setCustomer(c.name);setShowCusts(false);}} className="p-4 border-b border-[#2A2323] last:border-0 active:bg-[#1E1919] flex items-center justify-between cursor-pointer">
                   <div className="flex items-center gap-3"><Users size={16} className="text-[#D4AF37]" /><span className="text-[#F4EFEA] font-bold">{c.name}</span></div>
@@ -152,6 +171,7 @@ const AddOrderForm = memo(function AddOrderForm({ recipes, inventory, preps, onS
             )}
             </div>
           }
+          </div>
           
           <div className="grid grid-cols-2 gap-4 mb-5">
             <div>

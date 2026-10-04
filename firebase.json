@@ -3,7 +3,9 @@
     "rules": "firestore.rules"
   },
   "hosting": {
-    "public": "dist",
+    "site": "whisked-app",
+    "public": "landing",
+    "cleanUrls": true,
     "ignore": [
       "firebase.json",
       "**/.*",

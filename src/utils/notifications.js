@@ -1,22 +1,17 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { Capacitor } from '@capacitor/core';
 import useStore from '../store/useStore';
 
 export async function requestNotificationPermissions() {
-  if (Capacitor.isNativePlatform()) {
-    try {
-      const { display } = await LocalNotifications.requestPermissions();
-      return display === 'granted';
-    } catch (e) {
-      console.error("LocalNotifications permission error:", e);
-      return false;
-    }
+  try {
+    const { display } = await LocalNotifications.requestPermissions();
+    return display === 'granted';
+  } catch (e) {
+    console.error("LocalNotifications permission error:", e);
+    return false;
   }
-  return false;
 }
 
 export async function scheduleOrderNotifications(orders, settings) {
-  if (!Capacitor.isNativePlatform()) return;
   
   const daysBefore = settings?.notifications?.orderDeadlineDays;
   if (!daysBefore) return; // if missing, effectively disabled
@@ -52,7 +47,6 @@ export async function scheduleOrderNotifications(orders, settings) {
 }
 
 export async function checkInventoryExpiry(inventory, settings) {
-  if (!Capacitor.isNativePlatform()) return;
   
   const daysBefore = settings?.notifications?.expiryAlertDays;
   if (!daysBefore) return;

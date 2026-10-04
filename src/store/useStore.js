@@ -4,6 +4,8 @@ const useStore = create((set) => ({
   // Auth
   user: null,
   isAuthenticated: false,
+  showGuide: false,
+  setShowGuide: (val) => set({ showGuide: val }),
 
   // Settings
   settings: {

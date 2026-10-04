@@ -47,12 +47,11 @@ const InvoicePreview = memo(function InvoicePreview({ sales, recipes }) {const {
     <div className="p-4 pb-28 flex flex-col items-center">
       <div ref={invoiceRef} className="bg-[#FDFBF7] text-[#2A2323] p-6 rounded-sm shadow-xl w-full max-w-sm font-mono text-sm relative border border-[#D4AF37]/50">
         <div className="text-center mb-6 border-b-2 border-dashed border-[#8C7A7A]/30 pb-4 flex flex-col items-center">
-          <Logo size={28} textColor="#151212" iconColor="#151212" className="mb-1" />
-          <p className="text-[#8C7A7A] text-xs uppercase tracking-widest">{t("auto.t_53", "Товарний чек")}</p>
-          <p className="font-bold mt-2 text-sm">{dt}</p>
+          <p className="text-[#8C7A7A] text-[10px] uppercase tracking-widest">{t("auto.t_53", "Товарний чек")}</p>
+          <p className="font-bold mt-1 text-xs">{dt}</p>
         </div>
         <div className="mb-4">
-          <div className="flex justify-between font-bold border-b border-[#8C7A7A]/30 pb-2 mb-2 text-[10px] uppercase tracking-widest text-[#8C7A7A]">
+          <div className="flex justify-between font-bold border-b border-[#8C7A7A]/30 pb-2 mb-2 text-[9px] uppercase tracking-widest text-[#8C7A7A]">
             <span className="w-[45%]">{t("auto.t_54", "Найменування")}</span>
             <span className="w-[20%] text-center">{t("auto.t_55", "Ціна")}</span>
             <span className="w-[15%] text-center">{t("auto.t_56", "К-ть")}</span>
@@ -68,31 +67,31 @@ const InvoicePreview = memo(function InvoicePreview({ sales, recipes }) {const {
                   const dN = f ? `${r.name} (${f.name})` : r ? r.name : 'Товар';
                   const unitPrice = i.quantity > 0 ? (i.sellPrice / i.quantity).toFixed(2) : i.sellPrice.toFixed(2);
                   return (
-                    <div key={x} className="flex justify-between py-2 border-b border-[#8C7A7A]/10 items-center">
-                      <span className="w-[45%] pr-2 font-bold leading-tight text-[#151212]">{dN}</span>
-                      <span className="w-[20%] text-center text-[#8C7A7A]">{unitPrice}₴</span>
-                      <span className="w-[15%] text-center font-bold">{i.quantity}</span>
-                      <span className="w-[20%] text-right font-black text-base">{Number(i.sellPrice).toFixed(2)}₴</span>
+                    <div key={x} className="flex justify-between py-1.5 border-b border-[#8C7A7A]/10 items-center">
+                      <span className="w-[45%] pr-2 font-bold leading-tight text-[#151212] text-xs">{dN}</span>
+                      <span className="w-[20%] text-center text-[#8C7A7A] text-xs">{unitPrice}₴</span>
+                      <span className="w-[15%] text-center font-bold text-xs">{i.quantity}</span>
+                      <span className="w-[20%] text-right font-black text-sm">{Number(i.sellPrice).toFixed(2)}₴</span>
                     </div>);
 
                 })}
                 {o.decorPrice > 0 &&
-                <div className="flex justify-between py-2 border-b border-[#8C7A7A]/10 items-center text-[#8C7A7A] text-xs italic">
+                <div className="flex justify-between py-1.5 border-b border-[#8C7A7A]/10 items-center text-[#8C7A7A] text-[10px] italic">
                     <span className="w-[45%] pr-2">{t("auto.t_58", "+ Декор / Пакування")}</span>
                     <span className="w-[20%] text-center">-</span>
                     <span className="w-[15%] text-center">-</span>
-                    <span className="w-[20%] text-right font-bold text-[#151212]">{Number(o.decorPrice).toFixed(2)}₴</span>
+                    <span className="w-[20%] text-right font-bold text-[#151212] text-xs">{Number(o.decorPrice).toFixed(2)}₴</span>
                   </div>
                 }
               </React.Fragment>);
 
           })}
         </div>
-        <div className="border-t-2 border-dashed border-[#8C7A7A]/30 pt-4 mt-4 flex justify-between items-center">
-          <span className="text-sm font-bold uppercase text-[#8C7A7A] tracking-widest">{t("auto.t_59", "Всього:")}</span>
-          <span className="text-3xl font-black text-[#151212]">{ts.toFixed(2)} ₴</span>
+        <div className="border-t-2 border-dashed border-[#8C7A7A]/30 pt-3 mt-3 flex justify-between items-center">
+          <span className="text-xs font-bold uppercase text-[#8C7A7A] tracking-widest">{t("auto.t_59", "Всього:")}</span>
+          <span className="text-2xl font-black text-[#151212]">{ts.toFixed(2)} ₴</span>
         </div>
-        <div className="text-center mt-10 text-[#8C7A7A] text-xs uppercase tracking-widest">{t("auto.t_60", "Дякуємо за замовлення!")}<br />{t("auto.t_61", "Чекаємо на вас знову.")}</div>
+        <div className="text-center mt-8 text-[#8C7A7A] text-[10px] uppercase tracking-widest">{t("auto.t_60", "Дякуємо за замовлення!")}<br />{t("auto.t_61", "Чекаємо на вас знову.")}</div>
       </div>
 
       <button onClick={shareInvoice} disabled={isGenerating} className="mt-6 w-full max-w-sm bg-[#2AABEE] text-white font-bold py-4 rounded-xl shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-all disabled:opacity-50 text-lg">

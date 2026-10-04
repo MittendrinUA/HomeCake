@@ -1,43 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Capacitor } from '@capacitor/core';
-import { getAuth, GoogleAuthProvider, signInWithCredential, signInWithPopup, signInAnonymously } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithCredential, signInAnonymously } from 'firebase/auth';
 import Logo from './ui/Logo';
-
-const isNative = Capacitor.isNativePlatform();
 
 export default function PinScreen({ onUnlock }) {
   const { t } = useTranslation();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
-    // Only initialize the Capacitor Google Auth plugin on native platforms
-    if (isNative) {
-      import('@codetrix-studio/capacitor-google-auth').then(({ GoogleAuth }) => {
-        GoogleAuth.initialize({
-          clientId: '236979354452-dlt4329gv7vmtba8f6jvvubd1f4ud41m.apps.googleusercontent.com',
-          scopes: ['profile', 'email'],
-          grantOfflineAccess: true,
-        });
+    import('@codetrix-studio/capacitor-google-auth').then(({ GoogleAuth }) => {
+      GoogleAuth.initialize({
+        clientId: '236979354452-dlt4329gv7vmtba8f6jvvubd1f4ud41m.apps.googleusercontent.com',
+        scopes: ['profile', 'email'],
+        grantOfflineAccess: true,
       });
-    }
+    });
   }, []);
 
   const handleGoogleLogin = async () => {
     setIsLoggingIn(true);
     try {
       const auth = getAuth();
-      if (isNative) {
-        // Native Android/iOS — use Capacitor plugin
-        const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth');
-        const googleUser = await GoogleAuth.signIn();
-        const credential = GoogleAuthProvider.credential(googleUser.authentication.idToken);
-        await signInWithCredential(auth, credential);
-      } else {
-        // Web browser — use Firebase popup (no origin registration needed for Firebase Auth)
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-      }
+      const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth');
+      const googleUser = await GoogleAuth.signIn();
+      const credential = GoogleAuthProvider.credential(googleUser.authentication.idToken);
+      await signInWithCredential(auth, credential);
     } catch (error) {
       console.error('Google Sign In Error:', error);
       const errorMsg = error?.message || error?.error || JSON.stringify(error) || String(error);

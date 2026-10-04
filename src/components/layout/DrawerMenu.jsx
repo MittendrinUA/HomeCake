@@ -1,7 +1,8 @@
 import React, { memo, useState } from 'react';
-import { ShoppingCart, Book, Package, BarChart2, Users, Utensils, Settings, CheckCircle, X, LogOut, Trash2, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Book, Package, BarChart2, Users, Utensils, Settings, CheckCircle, X, LogOut, Trash2, ChevronRight, Globe, Lightbulb } from 'lucide-react';
 import { getAuth, GoogleAuthProvider, linkWithCredential, signInWithCredential } from 'firebase/auth';
 import Logo from '../ui/Logo';
+import useStore from '../../store/useStore';
 
 function DrawerBtn({ icon, label, active, onClick, isLast }) {
   return (
@@ -43,6 +44,7 @@ import { useTranslation } from 'react-i18next';
 const DrawerMenu = memo(function DrawerMenu({ activeTab, user, onNavigate, onClose, onShowPaywall, onShowSettings, showToast }) {
   const { t } = useTranslation();
   const [isClosing, setIsClosing] = useState(false);
+  const setShowGuide = useStore((state) => state.setShowGuide);
 
   const handleClose = () => {
     setIsClosing(true);
@@ -101,15 +103,20 @@ const DrawerMenu = memo(function DrawerMenu({ activeTab, user, onNavigate, onClo
           <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">{t('menu.mainSection', 'Головне')}</p>
           <div className="bg-[#1E1919] rounded-[28px] border border-[#2A2323] mb-6 overflow-hidden shadow-xl shadow-black/20">
             <DrawerBtn icon={<ShoppingCart size={20}/>} label={t('menu.sales', 'Замовлення')} active={activeTab==='sales'} onClick={() => { onNavigate('sales'); handleClose(); }}/>
-            <DrawerBtn icon={<Book size={20}/>} label={t('menu.recipes', 'Каталог десертів')} active={activeTab==='recipes'} onClick={() => { onNavigate('recipes'); handleClose(); }}/>
+            <DrawerBtn icon={<Book size={20}/>} label={t('menu.recipes', 'Каталог')} active={activeTab==='recipes'} onClick={() => { onNavigate('recipes'); handleClose(); }}/>
             <DrawerBtn icon={<Utensils size={20}/>} label={t('menu.preps', 'Заготівлі')} active={activeTab==='preps'} onClick={() => { onNavigate('preps'); handleClose(); }} isLast/>
+          </div>
+          
+          <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">Навчання</p>
+          <div className="bg-[#1E1919] rounded-[28px] border border-[#2A2323] mb-6 overflow-hidden shadow-xl shadow-black/20">
+            <DrawerBtn icon={<Lightbulb size={20}/>} label="💡 Як користуватися?" active={false} onClick={() => { setShowGuide(true); handleClose(); }} isLast/>
           </div>
 
           <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">{t('menu.managementSection', 'Управління')}</p>
           <div className="bg-[#1E1919] rounded-[28px] border border-[#2A2323] mb-6 overflow-hidden shadow-xl shadow-black/20">
-            <DrawerBtn icon={<Package size={20}/>} label={t('menu.inventory', 'Склад інгредієнтів')} active={activeTab==='inventory'} onClick={() => { onNavigate('inventory'); handleClose(); }}/>
-            <DrawerBtn icon={<Users size={20}/>} label={t('menu.customers', 'Клієнти (CRM)')} active={activeTab==='customers'} onClick={() => { onNavigate('customers'); handleClose(); }}/>
-            <DrawerBtn icon={<BarChart2 size={20}/>} label={t('menu.analytics', 'Аналітика')} active={activeTab==='analytics'} onClick={() => { onNavigate('analytics'); handleClose(); }} isLast/>
+            <DrawerBtn icon={<Package size={20}/>} label={t('menu.inventory', 'Склад')} active={activeTab==='inventory'} onClick={() => { onNavigate('inventory'); handleClose(); }}/>
+            <DrawerBtn icon={<Users size={20}/>} label={t('menu.customers', 'Клієнти')} active={activeTab==='customers'} onClick={() => { onNavigate('customers'); handleClose(); }}/>
+            <DrawerBtn icon={<BarChart2 size={20}/>} label={t('menu.analytics', 'Аналітика та CRM')} active={activeTab==='analytics'} onClick={() => { onNavigate('analytics'); handleClose(); }} isLast/>
           </div>
 
           <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">{t('menu.dataSection', 'Дані')}</p>
@@ -119,6 +126,7 @@ const DrawerMenu = memo(function DrawerMenu({ activeTab, user, onNavigate, onClo
 
           <p className="text-[#8C7A7A] text-[10px] uppercase font-bold tracking-widest mb-2.5 pl-3">{t('settings.title', 'Налаштування')}</p>
           <div className="bg-[#1E1919] rounded-[28px] border border-[#2A2323] mb-10 overflow-hidden shadow-xl shadow-black/20">
+            <ActionBtn icon={<Globe size={20}/>} label={t('menu.landing', 'Офіційний сайт')} onClick={() => window.open('https://whisked-app.web.app', '_blank')} />
             <ActionBtn icon={<Settings size={20}/>} label={t('settings.title', 'Налаштування')} onClick={() => { onShowSettings(); handleClose(); }} isLast={user?.isAnonymous}/>
             
             {user?.isAnonymous ? (

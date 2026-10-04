@@ -2,11 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+html, body, #root {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
   min-width: 320px;
-  min-height: 100vh;
-  background-color: #000000; /* Чорний фон, щоб не блимало білим при завантаженні */
+  background-color: #151212;
+  overflow: hidden;
 }
 
 /* ==================================================== */
@@ -29,17 +32,16 @@ body {
 
 button, a, input, textarea, select {
   outline: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Вбиваємо залипання hover-ефектів на сенсорних екранах */
-@media (hover: none) {
-  *:hover {
-    /* На телефонах hover не повинен працювати взагалі */
-    color: inherit;
-    background-color: inherit;
-    border-color: inherit;
-  }
+button, [type="button"], [type="submit"], [type="reset"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: transparent;
 }
+
+
 
 .pt-safe {
   padding-top: max(env(safe-area-inset-top), 16px);

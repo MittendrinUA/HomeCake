@@ -1,5 +1,7 @@
-import { useTranslation } from "react-i18next";import React, { useState, memo } from 'react';
+import { useTranslation } from "react-i18next";
+import React, { useState, useMemo, memo } from 'react';
 import { Search, PackageOpen, Utensils, Layers } from 'lucide-react';
+import EmptyState from '../ui/EmptyState';
 
 const List = memo(function List({ items, costFn, onClick, emptyTxt, showPrice, showThumb }) {const { t } = useTranslation();
   const getUnit = (u) => {
@@ -7,7 +9,17 @@ const List = memo(function List({ items, costFn, onClick, emptyTxt, showPrice, s
     return map[u] || u;
   };
   const [searchTerm, setSearchTerm] = useState('');
-  const filteredItems = items.filter((i) => (i?.name || '').toLowerCase().includes(searchTerm.toLowerCase()));
+  const [visibleCount, setVisibleCount] = useState(50);
+
+  const filteredAndSortedItems = useMemo(() => {
+    return [...(items || [])]
+      .filter((i) => (i?.name || '').toLowerCase().includes(searchTerm.toLowerCase()))
+      .sort((a, b) => (a?.name || '').localeCompare(b?.name || ''));
+  }, [items, searchTerm]);
+
+  useMemo(() => {
+    setVisibleCount(50);
+  }, [searchTerm]);
 
   return (
     <div className="pb-28">
@@ -18,13 +30,16 @@ const List = memo(function List({ items, costFn, onClick, emptyTxt, showPrice, s
         </div>
       </div>
 
-      {filteredItems.length === 0 ?
-      <div className="p-8 text-center flex flex-col items-center mt-4">
-          <PackageOpen size={48} className="text-[#2A2323] mb-4" />
-          <p className="text-[#8C7A7A] font-medium">{emptyTxt}</p>
-        </div> :
+      {filteredAndSortedItems.length === 0 ?
+      <EmptyState 
+        icon={PackageOpen}
+        title={emptyTxt}
+        description="Почніть додавати елементи, щоб вони з'явилися тут."
+        actionLabel="Додати"
+        onAction={() => document.getElementById('global-add-btn')?.click()}
+      /> :
 
-      [...filteredItems].sort((a, b) => (a?.name || '').localeCompare(b?.name || '')).map((item) => {
+      filteredAndSortedItems.slice(0, visibleCount).map((item) => {
         const hasFillings = item.fillings && item.fillings.length > 0;
         const baseCost = costFn(item);
         return (
@@ -38,7 +53,7 @@ const List = memo(function List({ items, costFn, onClick, emptyTxt, showPrice, s
                 <div className="pr-2">
                   <h3 className="text-[#F4EFEA] font-semibold text-[17px] tracking-tight leading-tight mb-1">{item.name}</h3>
                   {showPrice && item.defaultPrice > 0 && <p className="text-[#D4AF37] text-sm font-bold">{t("auto.t_114", "Прайс:")}{item.defaultPrice} ₴ / {item.baseYield || 1}{getUnit(item.unit || 'шт')}</p>}
-                  {hasFillings && <p className="text-[#D4AF37]/70 text-[10px] font-bold mt-1.5 flex items-center gap-1 uppercase tracking-widest"><Layers size={10} /> {item.fillings.length}{t("auto.t_115", "варіантів")}</p>}
+                  {hasFillings && <p className="text-[#D4AF37]/70 text-[10px] font-bold mt-1.5 flex items-center gap-1 uppercase tracking-widest"><Layers size={10} /> {item.fillings.length}</p>}
                 </div>
               </div>
               <div className="text-right shrink-0 bg-[#151212] px-3 py-2 rounded-xl border border-[#2A2323]">
@@ -49,6 +64,17 @@ const List = memo(function List({ items, costFn, onClick, emptyTxt, showPrice, s
 
       })
       }
+
+      {visibleCount < filteredAndSortedItems.length && (
+        <div className="px-4">
+          <button 
+            onClick={() => setVisibleCount(v => v + 50)}
+            className="w-full py-4 mt-2 mb-4 bg-[#1E1919] border border-[#2A2323] text-[#8C7A7A] rounded-2xl font-bold uppercase tracking-widest text-xs active:scale-95 transition-all shadow-lg"
+          >
+            {t("auto.show_more", "Показати більше")} ({filteredAndSortedItems.length - visibleCount})
+          </button>
+        </div>
+      )}
     </div>);
 
 });

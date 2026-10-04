@@ -2,6 +2,7 @@
   "appId": "com.whisked.app",
   "appName": "Whisked",
   "webDir": "dist",
+  "backgroundColor": "#151212",
   "plugins": {
     "GoogleAuth": {
       "scopes": ["profile", "email"],
@@ -9,7 +10,8 @@
       "forceCodeForRefreshToken": true
     },
     "SplashScreen": {
-      "launchShowDuration": 2000,
+      "launchShowDuration": 0,
+      "launchFadeOutDuration": 0,
       "backgroundColor": "#151212",
       "androidSplashResourceName": "splash"
     },

@@ -2,11 +2,12 @@ import useStore from '../store/useStore';
 import React, { useState, useMemo } from 'react';
 import { BarChart2, Package, Star, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Analytics({ sales, recipes, inventory, costFn, customers, waste, onCustomerClick }) {
   const currency = useStore(s => s.settings?.currency || 'грн');
   const { t } = useTranslation();
-  const [period, setPeriod] = useState('month');
+  const [period, setPeriod] = useState('all');
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -78,87 +79,96 @@ export default function Analytics({ sales, recipes, inventory, costFn, customers
   }, [sales, waste, recipes, inventory, period, currentMonth, currentYear, costFn]);
 
   return (
-    <div className="p-4 pb-28">
-      <div className="flex bg-[#1E1919] border border-[#2A2323] rounded-[20px] p-1.5 mb-6 shadow-sm overflow-x-auto custom-scrollbar">
-        <button onClick={() => setPeriod('month')} className={`flex-1 min-w-[80px] py-2.5 text-[10px] uppercase tracking-widest font-bold rounded-xl transition-all ${period === 'month' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A]'}`}>{t('analytics.month')}</button>
-        <button onClick={() => setPeriod('year')} className={`flex-1 min-w-[80px] py-2.5 text-[10px] uppercase tracking-widest font-bold rounded-xl transition-all ${period === 'year' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A]'}`}>{currentYear}{t('analytics.year')}</button>
-        <button onClick={() => setPeriod('lastYear')} className={`flex-1 min-w-[80px] py-2.5 text-[10px] uppercase tracking-widest font-bold rounded-xl transition-all ${period === 'lastYear' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A]'}`}>{currentYear - 1}{t('analytics.year')}</button>
-        <button onClick={() => setPeriod('all')} className={`flex-1 min-w-[80px] py-2.5 text-[10px] uppercase tracking-widest font-bold rounded-xl transition-all ${period === 'all' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A]'}`}>{t('analytics.allTime')}</button>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 pb-28 space-y-6">
+      
+      <div className="flex bg-[#1E1919] border border-[#2A2323] rounded-3xl p-1.5 shadow-sm overflow-x-auto custom-scrollbar">
+        <button onClick={() => setPeriod('month')} className={`flex-1 min-w-[80px] py-3 text-[10px] uppercase tracking-widest font-bold rounded-[20px] transition-all ${period === 'month' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A] hover:text-[#F4EFEA]'}`}>{t('analytics.month', 'МІСЯЦЬ')}</button>
+        <button onClick={() => setPeriod('year')} className={`flex-1 min-w-[80px] py-3 text-[10px] uppercase tracking-widest font-bold rounded-[20px] transition-all ${period === 'year' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A] hover:text-[#F4EFEA]'}`}>{currentYear} {t('analytics.year', 'РІК')}</button>
+        <button onClick={() => setPeriod('lastYear')} className={`flex-1 min-w-[80px] py-3 text-[10px] uppercase tracking-widest font-bold rounded-[20px] transition-all ${period === 'lastYear' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A] hover:text-[#F4EFEA]'}`}>{currentYear - 1} {t('analytics.year', 'РІК')}</button>
+        <button onClick={() => setPeriod('all')} className={`flex-1 min-w-[80px] py-3 text-[10px] uppercase tracking-widest font-bold rounded-[20px] transition-all ${period === 'all' ? 'bg-[#151212] text-[#D4AF37] shadow-md border border-[#2A2323]' : 'text-[#8C7A7A] hover:text-[#F4EFEA]'}`}>{t('analytics.allTime', 'ВЕСЬ ЧАС')}</button>
       </div>
 
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[#F4EFEA] text-xl font-bold tracking-wide">{t('analytics.finance')}</h2>
-        <span className="text-[#8C7A7A] text-xs font-medium">{filteredSales.length} {t('analytics.ordersCount')}</span>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="bg-[#1E1919] border border-[#2A2323] p-5 rounded-[24px] shadow-lg">
-          <p className="text-[#8C7A7A] text-[10px] uppercase tracking-widest font-bold mb-1">{t('analytics.revenue')}</p>
-          <p className="text-[#F4EFEA] text-2xl font-bold">{tr.toFixed(2)} {currency}</p>
-        </div>
-        <div className="bg-[#1E1919] border border-[#2A2323] p-5 rounded-[24px] shadow-lg">
-          <p className="text-[#8C7A7A] text-[10px] uppercase tracking-widest font-bold mb-1">{t('analytics.cost')}</p>
-          <p className="text-[#F4EFEA] text-2xl font-bold">{tc.toFixed(2)} {currency}</p>
-        </div>
-      </div>
-
-      <div className="bg-gradient-to-br from-[#D4AF37]/20 to-[#151212] border border-[#D4AF37]/30 p-6 rounded-[32px] mb-8 shadow-lg relative overflow-hidden">
-        <div className="absolute right-0 top-0 opacity-10 pointer-events-none translate-x-1/4 -translate-y-1/4"><BarChart2 size={120} /></div>
-        <p className="text-[#D4AF37] text-xs uppercase font-bold tracking-widest mb-1">{t('analytics.netProfit')}</p>
-        <p className="text-[#F4EFEA] text-4xl font-black mb-4">{p.toFixed(2)} {currency}</p>
-        
-        <div className="w-full h-2 bg-[#1E1919] rounded-full overflow-hidden mb-2 border border-[#2A2323]">
-           <div className="h-full bg-[#D4AF37] rounded-full transition-all duration-500 ease-out" style={{ width: `${Math.max(0, Math.min(100, m))}%` }}></div>
-        </div>
-        
-        <div className="flex justify-between items-center mb-4">
-           <p className="text-[#8C7A7A] text-xs font-medium tracking-wide">{t('analytics.margin')}</p>
-           <p className="text-[#D4AF37] text-sm font-bold">{m}%</p>
+      <div>
+        <div className="flex items-end justify-between mb-4">
+          <h2 className="text-[#F4EFEA] text-[18px] font-black tracking-tight">{t('analytics.finance', 'Фінанси (Видано)')}</h2>
+          <span className="text-[#8C7A7A] text-[11px] font-medium">{filteredSales.length} {t('analytics.ordersCount', 'замовлень')}</span>
         </div>
 
-        {totalWasteLoss > 0 && (
-          <div className="border-t border-[#D4AF37]/20 pt-3 mt-1 flex justify-between items-center">
-             <p className="text-red-400/80 text-[10px] uppercase tracking-widest font-bold">{t('analytics.wasteLoss')}</p>
-             <p className="text-red-400 font-bold text-sm">-{totalWasteLoss.toFixed(2)} {currency}</p>
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-[#1A1616] border border-[#2A2323] p-5 rounded-[24px] shadow-lg">
+            <p className="text-[#8C7A7A] text-[9px] uppercase tracking-widest font-bold mb-1.5">{t('analytics.revenue', 'ВИРУЧКА')}</p>
+            <p className="text-[#F4EFEA] text-[22px] font-black">{tr.toFixed(2)} <span className="text-sm font-bold text-[#8C7A7A]">{currency}</span></p>
           </div>
-        )}
+          <div className="bg-[#1A1616] border border-[#2A2323] p-5 rounded-[24px] shadow-lg">
+            <p className="text-[#8C7A7A] text-[9px] uppercase tracking-widest font-bold mb-1.5">{t('analytics.cost', 'СОБІВАРТІСТЬ')}</p>
+            <p className="text-[#F4EFEA] text-[22px] font-black">{tc.toFixed(2)} <span className="text-sm font-bold text-[#8C7A7A]">{currency}</span></p>
+          </div>
+        </div>
+
+        <div className="bg-[#1A1616] border border-[#D4AF37]/30 p-6 rounded-[32px] shadow-[0_0_30px_rgba(212,175,55,0.05)] relative overflow-hidden">
+          <div className="absolute right-6 top-6 flex gap-1.5 opacity-20">
+             <div className="w-2.5 h-10 bg-[#D4AF37] rounded-full"></div>
+             <div className="w-2.5 h-16 bg-[#D4AF37] rounded-full"></div>
+          </div>
+          
+          <p className="text-[#D4AF37] text-[10px] uppercase font-bold tracking-widest mb-1">{t('analytics.netProfit', 'ЧИСТИЙ ПРИБУТОК')}</p>
+          <p className="text-[#F4EFEA] text-[34px] font-black tracking-tight mb-8">{p.toFixed(2)} <span className="text-xl font-bold text-[#8C7A7A]">{currency}</span></p>
+          
+          <div className="w-full h-1.5 bg-[#151212] rounded-full overflow-hidden mb-3 border border-[#2A2323]">
+             <div className="h-full bg-[#D4AF37] rounded-full transition-all duration-1000 ease-out" style={{ width: `${Math.max(0, Math.min(100, m))}%` }}></div>
+          </div>
+          
+          <div className="flex justify-between items-center">
+             <p className="text-[#8C7A7A] text-[11px] font-medium tracking-wide">{t('analytics.margin', 'Рентабельність (маржа)')}</p>
+             <p className="text-[#D4AF37] text-xs font-black">{m}%</p>
+          </div>
+
+          {totalWasteLoss > 0 && (
+            <div className="border-t border-[#2A2323] pt-4 mt-4 flex justify-between items-center">
+               <p className="text-red-400/80 text-[10px] uppercase tracking-widest font-bold">{t('analytics.wasteLoss', 'ВТРАТИ НА БРАК')}</p>
+               <p className="text-red-400 font-bold text-sm">-{totalWasteLoss.toFixed(2)} {currency}</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      <h2 className="text-[#F4EFEA] text-xl font-bold mb-4 tracking-wide">{t('analytics.inventoryAssets')}</h2>
-      <div className="bg-[#1E1919] border border-[#2A2323] p-6 rounded-[32px] shadow-lg mb-8 flex items-center justify-between">
-        <div>
-           <p className="text-[#8C7A7A] text-[10px] uppercase tracking-widest font-bold mb-1">{t('analytics.moneyInGoods')}</p>
-           <p className="text-[#D4AF37] text-3xl font-black">{iv.toFixed(2)} <span className="text-xl text-[#8C7A7A]">{currency}</span></p>
+      <div>
+        <h2 className="text-[#F4EFEA] text-[18px] font-black mb-4 tracking-tight">{t('analytics.inventoryAssets', 'Активи складу (Поточні)')}</h2>
+        <div className="bg-[#1A1616] border border-[#2A2323] p-6 rounded-[32px] shadow-lg flex items-center justify-between">
+          <div>
+             <p className="text-[#8C7A7A] text-[9px] uppercase tracking-widest font-bold mb-1.5">{t('analytics.moneyInGoods', 'ГРОШЕЙ У ТОВАРІ')}</p>
+             <p className="text-[#D4AF37] text-[28px] font-black">{iv.toFixed(2)} <span className="text-[16px] text-[#8C7A7A]">{currency}</span></p>
+          </div>
+          <div className="bg-[#151212] p-4 rounded-2xl border border-[#2A2323]"><Package size={24} className="text-[#8C7A7A]" /></div>
         </div>
-        <div className="bg-[#151212] p-3 rounded-2xl border border-[#2A2323]"><Package size={24} className="text-[#8C7A7A]" /></div>
       </div>
 
       {topC.length > 0 && (
-        <>
-          <h2 className="text-[#F4EFEA] text-xl font-bold mb-4 tracking-wide flex items-center gap-2"><Star size={20} className="text-[#D4AF37]"/> {t('analytics.topClients')}</h2>
-          <div className="bg-[#1E1919] border border-[#2A2323] rounded-[32px] shadow-lg overflow-hidden">
+        <div>
+          <h2 className="text-[#F4EFEA] text-[18px] font-black mb-4 tracking-tight flex items-center gap-2"><Star size={20} className="text-[#D4AF37]"/> {t('analytics.topClients', 'Топ Клієнти (за обраний час)')}</h2>
+          <div className="bg-[#1A1616] border border-[#2A2323] rounded-[32px] shadow-lg overflow-hidden">
             {topC.map((c, idx) => (
               <div 
                 key={c.name} 
                 onClick={() => onCustomerClick && onCustomerClick(c.name)}
-                className={`p-4 flex items-center justify-between cursor-pointer active:bg-[#151212] transition-colors ${idx!==0?'border-t border-[#2A2323]':''}`}
+                className={`p-5 flex items-center justify-between cursor-pointer active:bg-[#151212] transition-colors ${idx!==0?'border-t border-[#2A2323]':''}`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="bg-[#151212] w-8 h-8 rounded-full flex items-center justify-center border border-[#D4AF37]/30 text-[#D4AF37] font-bold text-xs">{idx+1}</div>
+                <div className="flex items-center gap-4">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border font-black text-xs ${idx === 0 ? 'bg-[#D4AF37]/10 border-[#D4AF37]/40 text-[#D4AF37]' : 'bg-[#151212] border-[#2A2323] text-[#8C7A7A]'}`}>{idx+1}</div>
                   <div>
-                    <p className="text-[#F4EFEA] font-bold text-sm leading-tight">{c.name}</p>
-                    <p className="text-[#8C7A7A] text-[10px] uppercase tracking-widest">{c.count} {t('analytics.ordersLabel')}</p>
+                    <p className="text-[#F4EFEA] font-bold text-[15px] leading-tight mb-0.5">{c.name}</p>
+                    <p className="text-[#8C7A7A] text-[9px] uppercase tracking-widest font-bold">{c.count} {t('analytics.ordersLabel', 'ЗАМОВЛЕНЬ')}</p>
                   </div>
                 </div>
-                <div className="text-right flex items-center gap-2">
-                   <p className="text-[#D4AF37] font-black">{c.spent.toFixed(2)} {currency}</p>
-                   <ChevronRight size={18} className="text-[#8C7A7A]" />
+                <div className="text-right flex items-center gap-3">
+                   <p className="text-[#D4AF37] font-black text-[15px]">{c.spent.toFixed(2)} <span className="text-[#8C7A7A] text-xs">{currency}</span></p>
+                   <ChevronRight size={18} className="text-[#8C7A7A]/50" />
                 </div>
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </motion.div>
   );
 }

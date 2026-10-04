@@ -27,8 +27,13 @@ export default function CustomPrompt({ config, onClose }) {const { t } = useTran
             onChange={(val) => setValues({ ...values, [f.name]: val })}
             options={[{ value: '', label: 'Оберіть...' }, ...f.options.map((o) => ({ value: o, label: o }))]}
             className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] rounded-2xl p-4 outline-none font-medium" /> :
-
-
+            f.type === 'textarea' ?
+          <textarea
+            value={values[f.name] || ''}
+            onChange={(e) => setValues({ ...values, [f.name]: e.target.value })}
+            placeholder={f.placeholder}
+            className="w-full bg-[#151212] border border-[#2A2323] text-[#F4EFEA] focus:border-[#D4AF37] rounded-2xl p-4 outline-none font-medium transition-colors min-h-[120px] resize-none"
+            autoFocus={i === 0} /> :
           <input
             type={f.type || 'text'}
             inputMode={f.type === 'number' ? 'decimal' : 'text'}
